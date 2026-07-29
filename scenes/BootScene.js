@@ -27,7 +27,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.spritesheet("rose", "assets/sprites/npcs/rose.png", { frameWidth: 96, frameHeight: 128 });
     this.load.spritesheet("victim", "assets/sprites/npcs/victim.png", { frameWidth: 96, frameHeight: 128 });
 
-    this.load.spritesheet("tiles", "assets/tiles/roguelikeSheet_transparent.png", {
+    this.load.spritesheet("tiles", "assets/titles/Spritesheet/roguelikeSheet_transparent.png", {
       frameWidth: 16,
       frameHeight: 16
     });
