@@ -8,7 +8,7 @@ const config = {
     type: Phaser.AUTO,
     width:GAME_HEIGHT,
     height: GAME_HEIGHT,
-    parent : "game_container",
+    parent : "game-container",
     backgroundColor: "#000000",
     physics: {
     default: "arcade",
