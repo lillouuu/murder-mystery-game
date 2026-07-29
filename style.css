@@ -1,0 +1,91 @@
+
+Style · CSS
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+body {
+  background: #0d0906;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Georgia, serif;
+}
+ 
+#game-container {
+  position: relative;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+ 
+#game-container canvas {
+  display: block;
+}
+ 
+/* Dialogue / clue overlay */
+#dialogue-box {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 700px;
+  background: rgba(15, 10, 8, 0.95);
+  border: 1px solid #6b5a3a;
+  border-radius: 6px;
+  padding: 16px 20px;
+  color: #e8dcc0;
+  z-index: 10;
+}
+ 
+#dialogue-title {
+  font-size: 18px;
+  color: #d8b04a;
+  margin-bottom: 8px;
+}
+ 
+#dialogue-text {
+  font-size: 15px;
+  line-height: 1.5;
+}
+ 
+#dialogue-close {
+  margin-top: 12px;
+  background: #5a1f1f;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+}
+ 
+#dialogue-close:hover {
+  background: #7a2b2b;
+}
+ 
+#dialogue-question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+ 
+.dialogue-question-btn {
+  text-align: left;
+  background: rgba(216, 176, 74, 0.1);
+  color: #e8dcc0;
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+ 
+.dialogue-question-btn:hover {
+  background: rgba(216, 176, 74, 0.25);
+}
+ 
