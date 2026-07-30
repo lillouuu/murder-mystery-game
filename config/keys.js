@@ -28,11 +28,11 @@ export const TEXTURE_KEYS = {
 // and the key used when launching SuspectScene, e.g.
 // this.scene.start(SCENE_KEYS.SUSPECT, { suspectId: SUSPECT_IDS.AGNES })
 export const SUSPECT_IDS = {
-  AGNES: "agnes_reed",
-  EDWARD: "edward_blackwell",
-  ELEANOR: "eleanor_harlow",
-  EDMUND: "edmund_harlow",
-  ROSE: "rose_harlow"
+  AGNES: "agnes",
+  EDWARD: "edward",
+  ELEANOR: "eleanor",
+  EDMUND: "edmund",
+  ROSE: "rose"
 };
 
 // Animation keys, shared by Player.js and NPC.js

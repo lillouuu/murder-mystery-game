@@ -6,7 +6,7 @@ import SuspectScene from "./scenes/SuspectScene.js";
 
 const config = {
     type: Phaser.AUTO,
-    width:GAME_HEIGHT,
+    width: GAME_WIDTH,
     height: GAME_HEIGHT,
     parent : "game-container",
     backgroundColor: "#000000",
