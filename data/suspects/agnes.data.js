@@ -8,6 +8,8 @@ export const agnesData = {
     dateOfBirth: "June 12, 1967",
     occupation: "Head Maid, Harlow Manor — 6 years",
     personality: "Quiet, efficient, invisible. Perfectly composed. The kind of woman nobody looks at twice.",
+   
+    publicBackstory: "Seven years ago Victor Harlow, drunk and reckless, struck and killed her husband Thomas (55) and son James (20) as they walked home from a football match. Victor's lawyers dismantled the case, and his innocent chauffeur went to prison in his place. Agnes lost everything in one night. She has worked at Harlow Manor for six years.",
     backstory: "Seven years ago Victor Harlow, drunk and reckless, struck and killed her husband Thomas (55) and son James (20) as they walked home from a football match. Victor's lawyers dismantled the case. He blamed his chauffeur — an innocent man who went to prison. Agnes lost everything in one night. She applied for the position at Harlow Manor deliberately. Spent six years earning trust, learning Victor's routines, and waiting for the right moment.",
     isGuilty: true,
     guiltType: "KILLER_B",

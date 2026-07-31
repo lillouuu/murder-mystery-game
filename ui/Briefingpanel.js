@@ -5,12 +5,12 @@
 // a clue description or one line of dialogue, this needs to hold a lot
 // more text at once and be comfortably readable.
 
-let overlayEL=null;
+let overlayEl=null;
 
 function ensureOverlay(){
-    if (overlayEL)return overlayEL;
-    overlayEL=document.createElement("div");
-    overlayEL.id="briefing-overlay";
+    if (overlayEl)return overlayEl;
+    overlayEl=document.createElement("div");
+    overlayEl.id="briefing-overlay";
     overlayEl.className = "briefing-overlay";
     overlayEl.innerHTML = `
     <div class="briefing-panel">
@@ -28,21 +28,21 @@ function ensureOverlay(){
 // after the overlay is hidden, so the scene decides where to go next.
 export function showBriefing(title,bodyHTML,continueLabel,onContinue){
     const overlay=ensureOverlay();
-    overlay.querySelector(".brieving-title").textContent=title;
+    overlay.querySelector(".briefing-title").textContent=title;
     overlay.querySelector(".briefing-body").innerHTML=bodyHTML;
 
-    const btn=overlay.querySelector(".briefing-continue-btn");
+   const btn=overlay.querySelector(".briefing-continue-btn");
     btn.textContent=continueLabel;
   // This panel gets reopened later (Case Notes from the Hallway), and each
   // open needs its own callback — clone-and-replace drops any listener
   // from a previous showBriefing() call before attaching the new one.
-   const freshBtn=btn.cloneNode(true);
+    const freshBtn=btn.cloneNode(true);
    btn.replaceWith(freshBtn);
    freshBtn.addEventListener("click",()=>{
     hideBriefing();
     onContinue();
    });
-   overlay.style;display="flex";
+   overlay.style.display="flex";
    overlay.querySelector(".briefing-panel").scrollTop = 0;
 
 

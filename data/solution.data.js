@@ -7,6 +7,15 @@ export const gameInfo = {
   detectiveIntro: "You are Detective Marlowe. You have been called to Harlow Manor at 1:00 AM. Harold Harlow's eldest son, Victor, has been found dead in his study. Everyone in the house is a suspect. Nobody is leaving until you have answers."
 };
 
+// data/solution.data.js — add this export
+export const victimData = {
+  fullName: "Victor Harlow",
+  age: 44,
+  occupation: "Co-owner of Harlow & Blackwell Investments, heir to Harlow Industries",
+  personality: "Charming on the surface, calculating underneath. Possessive, entitled, accustomed to taking what he wanted without consequences.",
+  publicBackstory: "Illegitimate son of Harold Harlow, born from his longtime mistress who died young. Harold took Victor in at age six and raised him as the favored son, giving him everything he ever asked for. Victor grew up believing he owned the world."
+};
+
 export const truthData = {
   killerA: {
     name: "Edward Blackwell",
