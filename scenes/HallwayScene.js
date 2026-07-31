@@ -57,12 +57,15 @@ export default class HallwayScene extends Phaser.Scene {
       });
     });
 
-    // Grand Hall — locked until every suspect has been questioned at least once
+    // Accusation — locked until every suspect has been questioned at least once.
+    // (Points at AccusationScene for now, the hardcoded phase-1 version.
+    // Swap this to SCENE_KEYS.GRAND_HALL once that scene's free-form
+    // LLM-evaluated theory flow is actually built.)
     const allVisited = visited.length >= SUSPECT_LIST.length;
-    const grandHallY = 170 + SUSPECT_LIST.length * 50 + 20;
-    const label = allVisited ? "Proceed to the Grand Hall" : "Grand Hall (question everyone first)";
-    this.makeButton(GAME_WIDTH / 2, grandHallY, label, allVisited ? 0x7a2b2b : 0x2a2a2a, () => {
-      if (allVisited) this.scene.start(SCENE_KEYS.GRAND_HALL);
+    const accusationY = 170 + SUSPECT_LIST.length * 50 + 20;
+    const label = allVisited ? "Make Your Accusation" : "Make an Accusation (question everyone first)";
+    this.makeButton(GAME_WIDTH / 2, accusationY, label, allVisited ? 0x7a2b2b : 0x2a2a2a, () => {
+      if (allVisited) this.scene.start(SCENE_KEYS.ACCUSATION);
     }, !allVisited);
   }
 

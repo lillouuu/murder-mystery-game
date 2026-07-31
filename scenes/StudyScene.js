@@ -1,7 +1,7 @@
 // scenes/StudyScene.js
 
 import { GAME_WIDTH, GAME_HEIGHT, INTERACT_RADIUS } from "../config/constants.js";
-import { SCENE_KEYS, SUSPECT_IDS } from "../config/keys.js";
+import { SCENE_KEYS } from "../config/keys.js";
 import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
@@ -50,18 +50,11 @@ export default class StudyScene extends Phaser.Scene {
     }).setOrigin(1, 1).setInteractive({ useHandCursor: true });
 
     this.exitText.on("pointerdown", () => {
-      console.log("TODO: go to HallwayScene once it exists");
-      // this.scene.start(SCENE_KEYS.HALLWAY);
+      this.scene.start(SCENE_KEYS.HALLWAY);
     });
 
     this.input.keyboard.on("keydown-E", () => this.tryExamineNearest());
     this.input.keyboard.on("keydown-ESC", () => hide());
-
-    // TEMP — remove once HallwayScene actually handles navigation.
-    // Press 1 to jump straight into Agnes's room to test SuspectScene.
-    this.input.keyboard.on("keydown-ONE", () => {
-      this.scene.start(SCENE_KEYS.SUSPECT, { suspectId: SUSPECT_IDS.AGNES });
-    });
   }
 
   tryExamineNearest() {

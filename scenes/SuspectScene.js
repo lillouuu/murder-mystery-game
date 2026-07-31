@@ -85,9 +85,15 @@ export default class SuspectScene extends Phaser.Scene {
     }).setOrigin(1, 1).setInteractive({ useHandCursor: true });
 
     this.exitText.on("pointerdown", () => {
-      console.log("TODO: go to HallwayScene once it exists");
-      // this.scene.start(SCENE_KEYS.HALLWAY);
+      this.scene.start(SCENE_KEYS.HALLWAY);
     });
+
+    // Mark this suspect as questioned so the Hallway checklist and the
+    // "everyone questioned" gate to the accusation know about it.
+    const visited = this.registry.get("visitedSuspects") || [];
+    if (!visited.includes(this.suspectId)) {
+      this.registry.set("visitedSuspects", [...visited, this.suspectId]);
+    }
 
     this.input.keyboard.on("keydown-E", () => this.handleInteractKey());
     this.input.keyboard.on("keydown-ESC", () => hide());

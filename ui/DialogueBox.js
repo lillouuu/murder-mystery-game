@@ -68,7 +68,7 @@ export function showDialogueList(npcName,questions,onSelect){
     const box= ensureBox();
     box.querySelector("#dialogue-title").textContent =npcName;
     
-    const textEl=bow.querySelector("#dialogue-text");
+    const textEl=box.querySelector("#dialogue-text");
     textEl.innerHTML="";
 
     const list=document.createElement("div");
@@ -76,7 +76,7 @@ export function showDialogueList(npcName,questions,onSelect){
 
     questions.forEach((q)=>{
         const btn= document.createElement("button");
-        btn.className="dialoque-question-btn";
+        btn.className="dialogue-question-btn";
         btn.textContent=q.question;
         // arrow function here keeps its own "q" — no closure/loop-variable bug
         btn.addEventListener("click", () => onSelect(q));

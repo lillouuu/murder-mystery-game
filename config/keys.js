@@ -9,7 +9,9 @@ export const SCENE_KEYS = {
   STUDY: "StudyScene",
   HALLWAY: "HallwayScene",
   SUSPECT: "SuspectScene",
-  GRAND_HALL: "GrandHallScene"
+  GRAND_HALL: "GrandHallScene",
+  ACCUSATION: "AccusationScene"
+  
 };
 
 // Texture/spritesheet keys — must match what's loaded in BootScene.js
