@@ -10,7 +10,8 @@ export const SCENE_KEYS = {
   HALLWAY: "HallwayScene",
   SUSPECT: "SuspectScene",
   GRAND_HALL: "GrandHallScene",
-  ACCUSATION: "AccusationScene"
+  ACCUSATION: "AccusationScene",
+  BRIEFING: "BriefingScene"
   
 };
 

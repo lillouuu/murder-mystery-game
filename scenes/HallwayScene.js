@@ -36,20 +36,26 @@ export default class HallwayScene extends Phaser.Scene {
 
     const visited = this.registry.get("visitedSuspects") || [];
 
-    this.add.text(GAME_WIDTH / 2, 75, `${visited.length} of ${SUSPECT_LIST.length} suspects questioned`, {
+    this.add.text(GAME_WIDTH / 2, 70, `${visited.length} of ${SUSPECT_LIST.length} suspects questioned`, {
       fontFamily: "Georgia, serif",
       fontSize: "14px",
       color: "#8a7a5a"
     }).setOrigin(0.5);
 
-    // Study button — always available, top of the list
-    this.makeButton(GAME_WIDTH / 2, 115, "Return to the Study", 0x5a1f1f, () => {
+    // Reopens the same briefing shown at the start of the game — victim
+    // context, the scene, and every suspect's backstory — for reference.
+    this.makeButton(GAME_WIDTH / 2, 105, "Case Notes", 0x33291f, () => {
+      this.scene.start(SCENE_KEYS.BRIEFING, { returnTo: SCENE_KEYS.HALLWAY });
+    });
+
+    // Study button — always available
+    this.makeButton(GAME_WIDTH / 2, 140, "Return to the Study", 0x5a1f1f, () => {
       this.scene.start(SCENE_KEYS.STUDY);
     });
 
     // One button per suspect, checkmark if already visited
     SUSPECT_LIST.forEach((s, i) => {
-      const y = 170 + i * 50;
+      const y = 180 + i * 44;
       const isVisited = visited.includes(s.id);
       const label = `${isVisited ? "✓ " : ""}${s.name} — ${s.room}`;
       this.makeButton(GAME_WIDTH / 2, y, label, isVisited ? 0x3a4a3a : 0x33291f, () => {
@@ -62,7 +68,7 @@ export default class HallwayScene extends Phaser.Scene {
     // Swap this to SCENE_KEYS.GRAND_HALL once that scene's free-form
     // LLM-evaluated theory flow is actually built.)
     const allVisited = visited.length >= SUSPECT_LIST.length;
-    const accusationY = 170 + SUSPECT_LIST.length * 50 + 20;
+    const accusationY = 180 + SUSPECT_LIST.length * 44 + 20;
     const label = allVisited ? "Make Your Accusation" : "Make an Accusation (question everyone first)";
     this.makeButton(GAME_WIDTH / 2, accusationY, label, allVisited ? 0x7a2b2b : 0x2a2a2a, () => {
       if (allVisited) this.scene.start(SCENE_KEYS.ACCUSATION);

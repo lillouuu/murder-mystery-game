@@ -5,6 +5,8 @@ import StudyScene from "./scenes/StudyScene.js";
 import SuspectScene from "./scenes/SuspectScene.js";
 import AccusationScene from "./scenes/AccusationScene.js";
 import HallwayScene from "./scenes/HallwayScene.js";
+import BriefingScene from "./scenes/BriefingScene.js";
+
 
 const config = {
     type: Phaser.AUTO,
@@ -16,7 +18,8 @@ const config = {
     default: "arcade",
     arcade: { gravity: { y: 0 }, debug: false }
    },
-    scene: [BootScene, TitleScene, StudyScene, SuspectScene, HallwayScene, AccusationScene]
+    scene: [BootScene, TitleScene, StudyScene, SuspectScene, HallwayScene, AccusationScene, BriefingScene]
+
 };
 
 new Phaser.Game(config)

@@ -1,5 +1,3 @@
-
-Style · CSS
 * {
   margin: 0;
   padding: 0;
@@ -88,4 +86,69 @@ body {
 .dialogue-question-btn:hover {
   background: rgba(216, 176, 74, 0.25);
 }
- 
+
+/* Case briefing — full-screen scrollable overlay, separate from the
+   small bottom-anchored dialogue box since this holds a lot more text */
+.briefing-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+}
+
+.briefing-panel {
+  background: rgba(20, 15, 10, 0.98);
+  border: 1px solid #6b5a3a;
+  border-radius: 8px;
+  width: min(90vw, 700px);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px 32px;
+  color: #e8dcc0;
+}
+
+.briefing-title {
+  font-family: Georgia, serif;
+  font-size: 26px;
+  color: #d8b04a;
+  margin-bottom: 18px;
+}
+
+.briefing-section {
+  margin-bottom: 22px;
+}
+
+.briefing-section h3 {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  color: #a89a7a;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #3a3028;
+  padding-bottom: 4px;
+}
+
+.briefing-section p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.briefing-continue-btn {
+  display: block;
+  margin: 8px auto 0;
+  background: #5a1f1f;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+
+.briefing-continue-btn:hover {
+  background: #7a2b2b;
+}
