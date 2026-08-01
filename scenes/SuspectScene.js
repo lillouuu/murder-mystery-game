@@ -42,6 +42,7 @@ export default class SuspectScene extends Phaser.Scene {
   }
 
   create() {
+    hide();
     const { roomInfo, suspectInfo, phase1Clues, dialogue } = this.data_;
 
     this.cameras.main.setBackgroundColor("#2b2420");
@@ -65,7 +66,7 @@ export default class SuspectScene extends Phaser.Scene {
       fontSize: "13px",
       color: "#d8c9a3"
     }).setOrigin(0.5);
-    
+
     this.add.text(NPC_START_POS.x, NPC_START_POS.y + 60, "View Profile", {
   fontSize: "13px", color: "#a89a7a", backgroundColor: "#2b2420", padding: { x: 8, y: 4 }
 }).setOrigin(0.5).setInteractive({ useHandCursor: true })

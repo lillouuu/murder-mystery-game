@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Tile Picker — find your frame numbers</title>
+<style>
+  body { background: #111; margin: 0; padding: 20px; font-family: monospace; }
+  h1 { color: #d8c9a3; font-size: 16px; }
+  p { color: #999; font-size: 13px; }
+  #grid { display: inline-block; background: #222; }
+  .row { display: flex; }
+  .tile {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    border: 1px solid #333;
+  }
+  .tile img {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    display: block;
+  }
+  .tile span {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,0.75);
+    color: #ffd84a;
+    font-size: 9px;
+    padding: 1px 2px;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+  <h1>Tile Picker</h1>
+  <p>Every frame from roguelikeSheet_transparent.png, numbered. Zoomed 3x so it's readable. Find your floor/wall/desk/chair tiles and note the number in the corner.</p>
+  <div id="grid"></div>
+
+<script>
+const TILE = 16;
+const MARGIN = 1;
+const COLS = 57;
+const ROWS = 31;
+const SHEET_PATH = "assets/titles/Spritesheet/roguelikeSheet_transparent.png";
+
+const grid = document.getElementById("grid");
+let frameIndex = 0;
+
+for (let r = 0; r < ROWS; r++) {
+  const rowEl = document.createElement("div");
+  rowEl.className = "row";
+  for (let c = 0; c < COLS; c++) {
+    const tileEl = document.createElement("div");
+    tileEl.className = "tile";
+
+    // Crop this one frame out of the sheet using a background-position trick
+    const bg = document.createElement("div");
+    bg.style.width = "48px";
+    bg.style.height = "48px";
+    bg.style.backgroundImage = `url(${SHEET_PATH})`;
+    bg.style.backgroundRepeat = "no-repeat";
+    bg.style.imageRendering = "pixelated";
+    const scale = 3; // 16px source -> 48px display
+    const srcX = c * (TILE + MARGIN);
+    const srcY = r * (TILE + MARGIN);
+    bg.style.backgroundPosition = `-${srcX * scale}px -${srcY * scale}px`;
+    bg.style.backgroundSize = `${968 * scale}px ${526 * scale}px`;
+
+    const label = document.createElement("span");
+    label.textContent = frameIndex;
+
+    tileEl.appendChild(bg);
+    tileEl.appendChild(label);
+    rowEl.appendChild(tileEl);
+    frameIndex++;
+  }
+  grid.appendChild(rowEl);
+}
+</script>
+</body>
+</html>

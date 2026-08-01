@@ -11,6 +11,7 @@ import { edwardData } from "../data/suspects/edward.data.js";
 import { eleanorData } from "../data/suspects/eleanor.data.js";
 import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
+import { hide } from "../ui/DialogueBox.js";
 
 const SUSPECT_LIST = [
   { id: SUSPECT_IDS.AGNES, name: agnesData.suspectInfo.fullName, room: agnesData.roomInfo.name },
@@ -26,6 +27,7 @@ export default class HallwayScene extends Phaser.Scene {
   }
 
   create() {
+    hide();
     this.cameras.main.setBackgroundColor("#1a1410");
 
     this.add.text(GAME_WIDTH / 2, 40, "Harlow Manor", {

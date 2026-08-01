@@ -17,7 +17,7 @@ function ensureBox() {
   boxEl.querySelector("#dialogue-close").addEventListener("click", hide);
   return boxEl;
 }
-// 
+
 export function showClue(name, description) {
   const box = ensureBox();
   box.querySelector("#dialogue-title").textContent = name;

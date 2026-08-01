@@ -29,7 +29,9 @@ export default class BootScene extends Phaser.Scene {
 
     this.load.spritesheet("tiles", "assets/titles/Spritesheet/roguelikeSheet_transparent.png", {
       frameWidth: 16,
-      frameHeight: 16
+      frameHeight: 16,
+      margin: 1,
+      spacing: 1
     });
   }
 
