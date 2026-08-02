@@ -12,10 +12,15 @@ import { edwardData } from "../data/suspects/edward.data.js";
 import { eleanorData } from "../data/suspects/eleanor.data.js";
 import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
-import { showBriefing } from "../ui/BriefingPanel.js";
+import { showDossier } from "../ui/BriefingPanel.js";
 
-const SUSPECTS = [agnesData, edwardData, eleanorData, edmundData, roseData];
-
+const SUSPECTS = [
+  { id: "agnes", data: agnesData },
+  { id: "edward", data: edwardData },
+  { id: "eleanor", data: eleanorData },
+  { id: "edmund", data: edmundData },
+  { id: "rose", data: roseData }
+];
 export default class BriefingScene extends Phaser.Scene{
     constructor(){
         super(SCENE_KEYS.BRIEFING);
@@ -31,33 +36,27 @@ export default class BriefingScene extends Phaser.Scene{
         // Reopened later as case notes from the Hallway, it just closes.
         const isFirstTime = this.returnTo === SCENE_KEYS.STUDY;
         const continueLabel = isFirstTime ? "Begin the Investigation" : "Close";
-         showBriefing("The Case File", this.buildBodyHTML(), continueLabel, () => {
+        const roster = [
+      {
+        id: "victim",
+        name: `${victimData.fullName} — deceased`,
+        subtitle: `Age ${victimData.age} — ${victimData.occupation}`,
+        textureSrc: "assets/sprites/npcs/victim.png",
+        tint: TINTS.victim,
+        detailHTML: `<p>${victimData.personality}</p><p>${victimData.publicBackstory}</p>`
+      },
+      ...SUSPECTS.map(({ id, data }) => ({
+        id,
+        name: data.suspectInfo.fullName,
+        subtitle: data.suspectInfo.occupation,
+        textureSrc: `assets/sprites/npcs/${id}.png`,
+        tint: TINTS[id],
+        detailHTML: `<p>${data.suspectInfo.personality}</p><p>${data.suspectInfo.publicBackstory ?? data.suspectInfo.backstory}</p>`
+      }))
+    ];
+
+    showDossier("The Case File", roster, continueLabel, () => {
       this.scene.start(this.returnTo);
     });
-  }
- 
-  buildBodyHTML() {
-    const section = (heading, ...paragraphs) => `
-      <div class="briefing-section">
-        <h3>${heading}</h3>
-        ${paragraphs.map((p) => `<p>${p}</p>`).join("")}
-      </div>
-    `;
- 
-    const victimSection = section("The Victim", gameInfo.detectiveIntro, gameInfo.setting);
- 
-    const sceneSection = section(
-      `The Scene — ${studyData.name}`,
-      studyData.atmosphere,
-      studyData.bodyDescription
-    );
- 
-    const rosterHeading = `<div class="briefing-section"><h3>Persons of Interest</h3></div>`;
- 
-    const suspectSections = SUSPECTS.map((s) =>
-      section(`${s.suspectInfo.fullName} — ${s.suspectInfo.occupation}`, s.suspectInfo.backstory)
-    ).join("");
- 
-    return victimSection + sceneSection + rosterHeading + suspectSections;
   }
 }

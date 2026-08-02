@@ -152,3 +152,125 @@ body {
 .briefing-continue-btn:hover {
   background: #7a2b2b;
 }
+
+/* Dossier — the case-file browser, roster on the left, detail on the right */
+.dossier-panel {
+  width: min(92vw, 780px);
+  max-height: 88vh;
+  padding: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dossier-title {
+  font-family: Georgia, serif;
+  font-size: 24px;
+  color: #d8b04a;
+  margin-bottom: 16px;
+}
+
+.dossier-body {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0; /* required so children can actually scroll within flex */
+}
+
+.dossier-roster {
+  width: 190px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.dossier-roster-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(216, 176, 74, 0.06);
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  text-align: left;
+  color: #cfc2a3;
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+
+.dossier-roster-item:hover {
+  background: rgba(216, 176, 74, 0.14);
+}
+
+.dossier-roster-item.active {
+  border-color: #d8b04a;
+  background: rgba(216, 176, 74, 0.2);
+  color: #f0e6c8;
+}
+
+.dossier-portrait-small {
+  width: 36px;
+  height: 48px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  background-size: 216% 216%; /* crops the 96x128 first frame down into this 36x48 box */
+}
+
+.dossier-detail {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 4px 4px;
+  display: flex;
+  gap: 18px;
+}
+
+.dossier-portrait-large {
+  width: 96px;
+  height: 128px;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dossier-tint-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dossier-detail-text h2 {
+  font-family: Georgia, serif;
+  color: #e8dcc0;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.dossier-subtitle {
+  color: #a89a7a;
+  font-size: 13px;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.dossier-detail-text p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #cfc2a3;
+}

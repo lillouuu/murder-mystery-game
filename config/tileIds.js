@@ -4,7 +4,7 @@
 // import from here so a re-pick later only means editing one file.
 
 export const TILES = {
-  FLOOR: 120,
+  FLOOR: 9,
 
   WALL_TOP: [697, 698, 699],
   WALL_BOTTOM: [872, 873, 874],
