@@ -34,6 +34,6 @@ export default class TitleScene extends Phaser.Scene {
 
     startBtn.on("pointerover", () => startBtn.setStyle({ backgroundColor: "#7a2b2b" }));
     startBtn.on("pointerout", () => startBtn.setStyle({ backgroundColor: "#5a1f1f" }));
-    startBtn.on("pointerdown", () => this.scene.start(SCENE_KEYS.BRIEFING));
+    startBtn.on("pointerdown", () => this.scene.start(SCENE_KEYS.INTRO));
   }
 }

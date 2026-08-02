@@ -6,6 +6,7 @@
 export const SCENE_KEYS = {
   BOOT: "BootScene",
   TITLE: "TitleScene",
+  INTRO : "IntroScene",
   STUDY: "StudyScene",
   HALLWAY: "HallwayScene",
   SUSPECT: "SuspectScene",

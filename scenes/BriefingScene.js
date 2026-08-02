@@ -4,8 +4,8 @@
 // player is dropped into the Study to start clicking on clues blind.
 // Reopenable later from the Hallway as "Case Notes" — returnTo tells
 // this scene where the Continue/Close button should send the player.
-import { SCENE_KEYS } from "../config/keys.js";
-import { gameInfo } from "../data/solution.data.js";
+import { SCENE_KEYS , TINTS} from "../config/keys.js";
+import { gameInfo , victimData } from "../data/solution.data.js";
 import { studyData } from "../data/study.data.js";
 import { agnesData } from "../data/suspects/agnes.data.js";
 import { edwardData } from "../data/suspects/edward.data.js";

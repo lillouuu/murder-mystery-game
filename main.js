@@ -6,6 +6,7 @@ import SuspectScene from "./scenes/SuspectScene.js";
 import AccusationScene from "./scenes/AccusationScene.js";
 import HallwayScene from "./scenes/HallwayScene.js";
 import BriefingScene from "./scenes/BriefingScene.js";
+import IntroScene from "./scenes/IntroScene.js";
 
 
 const config = {
@@ -18,7 +19,7 @@ const config = {
     default: "arcade",
     arcade: { gravity: { y: 0 }, debug: false }
    },
-    scene: [BootScene, TitleScene, StudyScene, SuspectScene, HallwayScene, AccusationScene, BriefingScene]
+    scene: [BootScene, TitleScene, IntroScene,StudyScene, SuspectScene, HallwayScene, AccusationScene, BriefingScene]
 
 };
 
