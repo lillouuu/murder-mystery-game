@@ -17,7 +17,7 @@ const LINES=[
 
 const FULL_TEXT =LINES.join("\n\n");
 const CHARS_PER_TICK=2;
-const TICK_DELAY = 18; // ms per reveal step — tune for faster/slower typewriter feel
+const TICK_DELAY = 35; // ms per reveal step — tune for faster/slower typewriter feel
 
 export default class IntroScene extends Phaser.Scene{
     constructor(){
