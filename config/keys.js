@@ -47,11 +47,3 @@ export const ANIM_KEYS = {
   WALK_UP: "walk-up"
 };
 
-export const TINTS = {
-  agnes: 0x8a9a8a,
-  edward: 0x3a3a4a,
-  eleanor: 0x9a5a6a,
-  edmund: 0x6a5a4a,
-  rose: 0xc08a9a,
-  victim: 0x6a8a6a
-};

@@ -5,7 +5,7 @@
 // registry, which persists across scene changes automatically.
 
 import { GAME_WIDTH, GAME_HEIGHT } from "../config/constants.js";
-import { SCENE_KEYS, SUSPECT_IDS, TINTS } from "../config/keys.js";
+import { SCENE_KEYS, SUSPECT_IDS } from "../config/keys.js";
 import { agnesData } from "../data/suspects/agnes.data.js";
 import { edwardData } from "../data/suspects/edward.data.js";
 import { eleanorData } from "../data/suspects/eleanor.data.js";

@@ -4,7 +4,7 @@
 // player is dropped into the Study to start clicking on clues blind.
 // Reopenable later from the Hallway as "Case Notes" — returnTo tells
 // this scene where the Continue/Close button should send the player.
-import { SCENE_KEYS , TINTS} from "../config/keys.js";
+import { SCENE_KEYS } from "../config/keys.js";
 import { gameInfo , victimData } from "../data/solution.data.js";
 import { studyData } from "../data/study.data.js";
 import { agnesData } from "../data/suspects/agnes.data.js";
@@ -42,7 +42,6 @@ export default class BriefingScene extends Phaser.Scene{
         name: `${victimData.fullName} — deceased`,
         subtitle: `Age ${victimData.age} — ${victimData.occupation}`,
         textureSrc: "assets/sprites/npcs/victim.png",
-        tint: TINTS.victim,
         detailHTML: `<p>${victimData.personality}</p><p>${victimData.publicBackstory}</p>`
       },
       ...SUSPECTS.map(({ id, data }) => ({
@@ -50,7 +49,6 @@ export default class BriefingScene extends Phaser.Scene{
         name: data.suspectInfo.fullName,
         subtitle: data.suspectInfo.occupation,
         textureSrc: `assets/sprites/npcs/${id}.png`,
-        tint: TINTS[id],
         detailHTML: `<p>${data.suspectInfo.personality}</p><p>${data.suspectInfo.publicBackstory ?? data.suspectInfo.backstory}</p>`
       }))
     ];

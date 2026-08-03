@@ -4,7 +4,7 @@
 //   this.scene.start(SCENE_KEYS.SUSPECT, { suspectId: SUSPECT_IDS.AGNES })
 
 import { GAME_WIDTH, GAME_HEIGHT, INTERACT_RADIUS } from "../config/constants.js";
-import { SCENE_KEYS, SUSPECT_IDS, TINTS } from "../config/keys.js";
+import { SCENE_KEYS, SUSPECT_IDS } from "../config/keys.js";
 import { agnesData } from "../data/suspects/agnes.data.js";
 import { edwardData } from "../data/suspects/edward.data.js";
 import { eleanorData } from "../data/suspects/eleanor.data.js";
@@ -60,8 +60,9 @@ export default class SuspectScene extends Phaser.Scene {
     // NPC sprite — texture key matches suspectId (see config/keys.js TEXTURE_KEYS),
     // tinted so reused base sheets still read as a distinct character.
     this.npc = this.add.sprite(NPC_START_POS.x, NPC_START_POS.y, this.suspectId);
-    this.npc.setScale(0.5);
-    this.npc.setTint(TINTS[this.suspectId] ?? 0xffffff);
+    this.npc.setScale(1); // matches Player's scale for the new 64x64 sheets
+    this.npc.setFrame(26); // "down" row (frame 0 on this sheet is 'up'/back-facing, not 'down' like the old sheet)
+    
 
     this.add.text(NPC_START_POS.x, NPC_START_POS.y - 50, suspectInfo.fullName, {
       fontSize: "13px",

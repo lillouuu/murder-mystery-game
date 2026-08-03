@@ -1,9 +1,23 @@
 // Two-pane case-file dossier: a roster list on the left (victim + every
 // suspect, small portrait + name), and a detail pane on the right showing
-// whichever person is selected. Portraits are cropped straight from the
-// existing NPC spritesheets (their default facing-down frame) — no new
-// art assets needed, since the sheet's first frame IS a clean portrait
-// shot at 96x128, and a div sized exactly that crops it automatically.
+// whichever person is selected.
+//
+// Portraits are cropped from the NPC spritesheets using a CSS background
+// trick: the sheet is 832x256 sliced into 64x64 cells (13 cols x 4 rows,
+// only cols 0-8 per row have real art). We pick one frame — the "down"
+// row's standing pose, row 2 col 0 — and use background-size/position to
+// zoom into just that cell, instead of showing the whole sheet squished
+// into the box. Sizes are set inline so this doesn't depend on whatever
+// width/height happens to be in the stylesheet for these classes.
+
+const SHEET_W = 832;
+const SHEET_H = 256;
+const FRAME = 64;
+const PORTRAIT_ROW = 2; // "down" / facing-camera row
+const PORTRAIT_COL = 0; // standing frame, not mid-stride
+
+const SMALL_DISPLAY = 56;  // roster thumbnail, px
+const LARGE_DISPLAY = 160; // detail pane portrait, px
 
 let overlayEl=null;
 
@@ -26,11 +40,27 @@ function ensureOverlay(){
     return overlayEl;
 
 }
-function hexToCss(hex) {
-  return "#" + hex.toString(16).padStart(6, "0");
+
+// Builds the inline style string that crops a single 64x64 frame out of
+// the full sheet and scales it up to `displaySize` px, crisp pixel-art style.
+function portraitStyle(textureSrc, displaySize) {
+  const scale = displaySize / FRAME;
+  const bgW = SHEET_W * scale;
+  const bgH = SHEET_H * scale;
+  const posX = -(PORTRAIT_COL * FRAME * scale);
+  const posY = -(PORTRAIT_ROW * FRAME * scale);
+  return [
+    `width:${displaySize}px`,
+    `height:${displaySize}px`,
+    `background-image:url(${textureSrc})`,
+    `background-repeat:no-repeat`,
+    `background-size:${bgW}px ${bgH}px`,
+    `background-position:${posX}px ${posY}px`,
+    `image-rendering:pixelated`
+  ].join(";");
 }
 
-// roster: [{ id, name, subtitle, textureSrc, tint, detailHTML }]
+// roster: [{ id, name, subtitle, textureSrc, detailHTML }]
 export function showDossier(title, roster, continueLabel, onContinue) {
   const overlay = ensureOverlay();
   overlay.querySelector(".dossier-title").textContent = title;
@@ -43,9 +73,7 @@ export function showDossier(title, roster, continueLabel, onContinue) {
     rosterEl.querySelectorAll(".dossier-roster-item").forEach((el) => el.classList.remove("active"));
     btnEl.classList.add("active");
     detailEl.innerHTML = `
-      <div class="dossier-portrait-large" style="background-image:url(${person.textureSrc})">
-        <div class="dossier-tint-overlay" style="background-color:${hexToCss(person.tint)}"></div>
-      </div>
+      <div class="dossier-portrait-large" style="${portraitStyle(person.textureSrc, LARGE_DISPLAY)}"></div>
       <div class="dossier-detail-text">
         <h2>${person.name}</h2>
         <p class="dossier-subtitle">${person.subtitle}</p>
@@ -59,9 +87,7 @@ export function showDossier(title, roster, continueLabel, onContinue) {
     const item = document.createElement("button");
     item.className = "dossier-roster-item";
     item.innerHTML = `
-      <div class="dossier-portrait-small" style="background-image:url(${person.textureSrc})">
-        <div class="dossier-tint-overlay" style="background-color:${hexToCss(person.tint)}"></div>
-      </div>
+      <div class="dossier-portrait-small" style="${portraitStyle(person.textureSrc, SMALL_DISPLAY)}"></div>
       <span>${person.name}</span>
     `;
     item.addEventListener("click", () => selectPerson(person, item));
