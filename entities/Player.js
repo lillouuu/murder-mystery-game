@@ -33,8 +33,8 @@ export default class Player {
     this.facingFrame = {
       up: 0,
       left: 13,
-      right: 26,
-      down: 39
+      down: 26,
+      right: 39
     };
      this.createAnims();
     this.facing = "down";
@@ -79,10 +79,10 @@ export default class Player {
     let vx = 0;
     let vy = 0;
 
-    if (left) { vx = -PLAYER_SPEED; this.sprite.setFrame(this.facingFrame.left); }
-    else if (right) { vx = PLAYER_SPEED; this.sprite.setFrame(this.facingFrame.right); }
-    else if (up) { vy = -PLAYER_SPEED; this.sprite.setFrame(this.facingFrame.up); }
-    else if (down) { vy = PLAYER_SPEED; this.sprite.setFrame(this.facingFrame.down); }
+    if (left) { vx = -PLAYER_SPEED; this.facing = "left"; }
+    else if (right) { vx = PLAYER_SPEED; this.facing = "right"; }
+    else if (up) { vy = -PLAYER_SPEED; this.facing = "up"; }
+    else if (down) { vy = PLAYER_SPEED; this.facing = "down"; }
 
     if (up && (left || right)) vy = -PLAYER_SPEED;
     if (down && (left || right)) vy = PLAYER_SPEED;
@@ -102,4 +102,3 @@ export default class Player {
   get x() { return this.sprite.x; }
   get y() { return this.sprite.y; }
 }
- 

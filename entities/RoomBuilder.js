@@ -17,6 +17,7 @@
 
 import { TILE_SIZE } from "../config/constants.js";
 import { TILES } from "../config/tileIds.js";
+import { PROP_FRAMES } from "../config/propFrames.js";
 
 const SOURCE_TILE_SIZE = 16; // actual pixel size in the Kenney sheet
 const SCALE = TILE_SIZE / SOURCE_TILE_SIZE; // 32 / 16 = 2x, so rooms don't look tiny
@@ -78,4 +79,24 @@ export function placeFurniture(scene, tileOrPair, gridX, gridY, { originX = 0, o
     return;
   }
   scene.add.image(x, y, "tiles", tileOrPair).setScale(SCALE);
+}
+
+// One-time setup per scene: carves the named rectangles in propFrames.js
+// out of the raw "interiorProps" image so they can be placed like normal
+// sprite frames. Safe to call every scene create() — no-ops after the first.
+export function registerPropFrames(scene) {
+  const texture = scene.textures.get("interiorProps");
+  Object.entries(PROP_FRAMES).forEach(([name, { x, y, w, h }]) => {
+    if (texture.has(name)) return;
+    texture.add(name, 0, x, y, w, h);
+  });
+}
+
+// Places a multi-tile prop (sofa, bookshelf, fireplace, etc) with its
+// top-left corner at the given grid cell — unlike placeFurniture, these
+// don't get centered on one cell since most span several.
+export function placeProp(scene, propName, gridX, gridY, { originX = 0, originY = 0 } = {}) {
+  const x = originX + gridX * TILE_SIZE;
+  const y = originY + gridY * TILE_SIZE;
+  return scene.add.image(x, y, "interiorProps", propName).setOrigin(0, 0).setScale(SCALE);
 }

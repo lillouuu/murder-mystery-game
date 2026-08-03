@@ -3,7 +3,7 @@
 // entirely by data passed in when the scene starts:
 //   this.scene.start(SCENE_KEYS.SUSPECT, { suspectId: SUSPECT_IDS.AGNES })
 
-import { GAME_WIDTH, GAME_HEIGHT, INTERACT_RADIUS } from "../config/constants.js";
+import { GAME_WIDTH, GAME_HEIGHT, INTERACT_RADIUS, TILE_SIZE } from "../config/constants.js";
 import { SCENE_KEYS, SUSPECT_IDS } from "../config/keys.js";
 import { agnesData } from "../data/suspects/agnes.data.js";
 import { edwardData } from "../data/suspects/edward.data.js";
@@ -11,6 +11,7 @@ import { eleanorData } from "../data/suspects/eleanor.data.js";
 import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
 import Player from "../entities/Player.js";
+import { buildRoom, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
 import { collectClue } from "../state/Corkboardstate.js";
 
@@ -24,7 +25,67 @@ const SUSPECT_DATA = {
   [SUSPECT_IDS.ROSE]: roseData
 };
 
-const NPC_START_POS = { x: 550, y: 260 };
+// Same room formula as StudyScene — one shared shape, only the furniture
+// list changes per suspect. Keeps every room feeling like the same manor.
+const ROOM_GRID = [
+  "WWWWWWWWWWWWWWWW",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "w..............w",
+  "WWWWWWWDWWWWWWWW"
+];
+const ORIGIN_X = (GAME_WIDTH - ROOM_GRID[0].length * TILE_SIZE) / 2;
+const ORIGIN_Y = (GAME_HEIGHT - ROOM_GRID.length * TILE_SIZE) / 2;
+
+// Furniture per suspect, from the new Pixel Crawler interior props sheet.
+// { prop, x, y } — x/y are grid cells, prop's top-left corner lands there.
+// First pass by eye — nudge freely once you see it in the room.
+const FURNITURE_LAYOUT = {
+  [SUSPECT_IDS.AGNES]: [
+    { prop: "STOVE", x: 2, y: 1 },
+    { prop: "ROUND_TABLE", x: 6, y: 4 },
+    { prop: "BOOKSHELF", x: 12, y: 1 },
+    { prop: "BROOM", x: 2, y: 6 },
+    { prop: "LAMP", x: 7, y: 3 }
+  ],
+  [SUSPECT_IDS.EDWARD]: [
+    { prop: "FIREPLACE", x: 5, y: 1 },
+    { prop: "BOOKSHELF", x: 1, y: 1 },
+    { prop: "BOOKSHELF", x: 12, y: 1 },
+    { prop: "LONG_TABLE", x: 5, y: 6 },
+    { prop: "CHAIR", x: 4, y: 6 }
+  ],
+  [SUSPECT_IDS.ELEANOR]: [
+    { prop: "BED", x: 2, y: 1 },
+    { prop: "WINDOW_GLASS", x: 11, y: 1 },
+    { prop: "PICTURE_FRAME", x: 7, y: 1 },
+    { prop: "CHAIR", x: 5, y: 5 }
+  ],
+  [SUSPECT_IDS.EDMUND]: [
+    { prop: "CHAIR", x: 6, y: 4 },
+    { prop: "SIDE_TABLE", x: 7, y: 4 },
+    { prop: "LAMP", x: 9, y: 4 },
+    { prop: "PICTURE_FRAME", x: 5, y: 1 },
+    { prop: "WINDOW_GLASS", x: 2, y: 1 }
+  ],
+  [SUSPECT_IDS.ROSE]: [
+    { prop: "WINDOW_GLASS", x: 2, y: 1 },
+    { prop: "WINDOW_GLASS", x: 10, y: 1 },
+    { prop: "PLANT_A", x: 2, y: 6 },
+    { prop: "PLANT_B", x: 11, y: 6 },
+    { prop: "PLANT_A", x: 7, y: 1 },
+    { prop: "PLANT_B", x: 7, y: 6 },
+    { prop: "ROUND_TABLE", x: 6, y: 4 }
+  ]
+};
+
+const NPC_START_POS = { x: ORIGIN_X + 11 * TILE_SIZE + 16, y: ORIGIN_Y + 4 * TILE_SIZE + 16 };
+const PLAYER_START_POS = { x: ORIGIN_X + 2 * TILE_SIZE + 16, y: ORIGIN_Y + 6 * TILE_SIZE + 16 };
 
 export default class SuspectScene extends Phaser.Scene {
   constructor() {
@@ -46,16 +107,26 @@ export default class SuspectScene extends Phaser.Scene {
     hide();
     const { roomInfo, suspectInfo, phase1Clues, dialogue } = this.data_;
 
-    this.cameras.main.setBackgroundColor("#2b2420");
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x352a22);
+    this.cameras.main.setBackgroundColor("#0d0906");
 
-    this.add.text(GAME_WIDTH / 2, 30, roomInfo.name, {
+    const { wallGroup } = buildRoom(this, ROOM_GRID, {
+      originX: ORIGIN_X,
+      originY: ORIGIN_Y
+    });
+
+    registerPropFrames(this);
+    (FURNITURE_LAYOUT[this.suspectId] ?? []).forEach(({ prop, x, y }) => {
+      placeProp(this, prop, x, y, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    });
+
+    this.add.text(GAME_WIDTH / 2, ORIGIN_Y - 16, roomInfo.name, {
       fontFamily: "Georgia, serif",
-      fontSize: "20px",
+      fontSize: "18px",
       color: "#a89a7a"
     }).setOrigin(0.5);
 
-    this.player = new Player(this, 200, 400);
+    this.player = new Player(this, PLAYER_START_POS.x, PLAYER_START_POS.y);
+    this.physics.add.collider(this.player.sprite, wallGroup);
 
     // NPC sprite — texture key matches suspectId (see config/keys.js TEXTURE_KEYS),
     // tinted so reused base sheets still read as a distinct character.

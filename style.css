@@ -213,10 +213,10 @@ body {
 }
 
 .dossier-portrait-small {
-  width: 36px;
-  height: 48px;
+  width: 32px;
+  height: 40px;
   background-repeat: no-repeat;
-  background-position: 0 0;
+  background-position: 0 -128px;
   image-rendering: pixelated;
   flex-shrink: 0;
   border-radius: 3px;
@@ -234,11 +234,11 @@ body {
 }
 
 .dossier-portrait-large {
-  width: 96px;
-  height: 128px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   background-repeat: no-repeat;
-  background-position: 0 0;
+  background-position: 0 -128px;
   image-rendering: pixelated;
   border: 1px solid #3a3028;
   border-radius: 6px;

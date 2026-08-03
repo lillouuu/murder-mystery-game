@@ -35,6 +35,11 @@ export default class BootScene extends Phaser.Scene {
       margin: 1,
       spacing: 1
     });
+
+    // Multi-tile furniture props (sofa, table, bookshelf, etc). Loaded as
+    // one plain image — named regions get carved out of it in create(),
+    // since pieces span different footprints and don't slice on a grid.
+    this.load.image("interiorProps", "assets/interior/props.png");
   }
 
   create() {

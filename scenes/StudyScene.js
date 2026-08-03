@@ -5,7 +5,7 @@ import { SCENE_KEYS } from "../config/keys.js";
 import { TILES } from "../config/tileIds.js";
 import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
-import { buildRoom, placeFurniture } from "../entities/RoomBuilder.js";
+import { buildRoom, placeFurniture, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
 import { collectClue } from "../state/Corkboardstate.js";
 // "wwwwwwwwwwwwwwww"
@@ -45,6 +45,14 @@ export default class StudyScene extends Phaser.Scene {
 
     // Desk, roughly centered — where the body/clues cluster
     placeFurniture(this, TILES.DESK, 7, 4, { originX: ORIGIN_X, originY: ORIGIN_Y });
+
+    // New furniture pass — bookshelves + armchairs flanking the desk, matching
+    // the reference look. Corners chosen to stay clear of the desk/rug.
+    registerPropFrames(this);
+    placeProp(this, "BOOKSHELF", 1, 1, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    placeProp(this, "BOOKSHELF", 12, 1, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    placeProp(this, "CHAIR", 1, 6, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    placeProp(this, "CHAIR", 13, 6, { originX: ORIGIN_X, originY: ORIGIN_Y });
 
     this.add.text(GAME_WIDTH / 2, ORIGIN_Y - 16, "Victor's Study", {
       fontFamily: "Georgia, serif",
