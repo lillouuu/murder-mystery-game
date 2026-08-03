@@ -12,7 +12,7 @@ import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
 import Player from "../entities/Player.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
-import { collectClue } from "../state/corkboardState.js";
+import { collectClue } from "../state/Corkboardstate.js";
 
 // One lookup table mapping suspectId -> that suspect's whole data module.
 // This is the thing that lets this single file work for all 5 suspects.

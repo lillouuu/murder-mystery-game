@@ -23,7 +23,7 @@ const config = {
 
 };
 
-new Phaser.Game(config)
+const game =new Phaser.Game(config)
 
 // DOM overlays (Notebook, CluesBoard) need to disable Phaser's global
 // keyboard capture while open, otherwise WASD keystrokes get swallowed

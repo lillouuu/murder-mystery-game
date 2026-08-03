@@ -1,7 +1,7 @@
 // ui/Notebook.js
 // Same DOM-overlay pattern as DialogueBox / CluesBoard.
 
-import { getNotebookText, setNotebookText } from "../state/corkboardState.js";
+import { getNotebookText, setNotebookText } from "../state/CorkboardState.js";
 
 let overlayEl = null;
 
@@ -64,7 +64,7 @@ function setGameKeyboardEnabled(enabled) {
   } else if (savedCaptures) {
     keyboard.captures = savedCaptures;
     savedCaptures = null;
-}
+  }
 }
 
 export function isNotebookOpen() {

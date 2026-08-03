@@ -18,7 +18,7 @@ import {
   removeConnection,
   getState,
   subscribe
-} from "../state/corkboardState.js";
+} from "../state/Corkboardstate.js";
 
 let overlayEl = null;
 let unsubscribe = null;
