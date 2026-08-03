@@ -7,7 +7,7 @@ import AccusationScene from "./scenes/AccusationScene.js";
 import HallwayScene from "./scenes/HallwayScene.js";
 import BriefingScene from "./scenes/BriefingScene.js";
 import IntroScene from "./scenes/IntroScene.js";
-
+import "./ui/BoardButtons.js";
 
 const config = {
     type: Phaser.AUTO,
@@ -24,3 +24,8 @@ const config = {
 };
 
 new Phaser.Game(config)
+
+// DOM overlays (Notebook, CluesBoard) need to disable Phaser's global
+// keyboard capture while open, otherwise WASD keystrokes get swallowed
+// by Player movement instead of reaching the textarea.
+window.game = game;

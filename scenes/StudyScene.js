@@ -7,6 +7,7 @@ import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
 import { buildRoom, placeFurniture } from "../entities/RoomBuilder.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
+import { collectClue } from "../state/corkboardState.js";
 // "wwwwwwwwwwwwwwww"
 // 16 cols x 10 rows. W = top wall, w = bottom wall trim, D = door, . = floor
 const STUDY_GRID = [
@@ -59,7 +60,10 @@ export default class StudyScene extends Phaser.Scene {
     this.clueMarkers = studyData.clues.map((clue) => {
       const marker = this.add.circle(clue.x, clue.y, 8, 0xd8b04a).setStrokeStyle(2, 0xffffff);
       marker.setInteractive({ useHandCursor: true });
-      marker.on("pointerdown", () => showClue(clue.name, clue.description));
+      marker.on("pointerdown", () => {
+        showClue(clue.name, clue.description);
+        collectClue(clue, "Victor's Study");
+      });
       this.add.text(clue.x, clue.y - 18, "?", { fontSize: "14px", color: "#ffffff" }).setOrigin(0.5);
       return { clue, marker };
     });
@@ -73,7 +77,10 @@ export default class StudyScene extends Phaser.Scene {
     const nearest = this.clueMarkers.find(({ clue }) =>
       Phaser.Math.Distance.Between(this.player.x, this.player.y, clue.x, clue.y) < INTERACT_RADIUS
     );
-    if (nearest) showClue(nearest.clue.name, nearest.clue.description);
+    if (nearest){
+       showClue(nearest.clue.name, nearest.clue.description);
+       collectClue(nearest.clue, "Victor's Study");
+    }
   }
 
   update() {

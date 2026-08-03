@@ -274,3 +274,311 @@ body {
   margin-bottom: 10px;
   color: #cfc2a3;
 }
+
+/* Corner toggle buttons for the notebook / clues board */
+#board-toggle-buttons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 15;
+}
+
+#board-toggle-buttons button {
+  background: rgba(20, 15, 10, 0.9);
+  color: #e8dcc0;
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+
+#board-toggle-buttons button:hover {
+  background: rgba(216, 176, 74, 0.2);
+  border-color: #d8b04a;
+}
+
+/* Shared overlay backdrop for notebook + clues board */
+.board-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+}
+
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  color: #d8b04a;
+  border-bottom: 1px solid #3a3028;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.board-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-header-actions button {
+  background: #5a1f1f;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+
+.board-header-actions button:hover {
+  background: #7a2b2b;
+}
+
+.corkboard-color-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #a89a7a;
+}
+
+.corkboard-color-label input[type="color"] {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+/* Notebook */
+.notebook-panel {
+  background: rgba(20, 15, 10, 0.98);
+  border: 1px solid #6b5a3a;
+  border-radius: 8px;
+  width: min(90vw, 600px);
+  height: min(80vh, 500px);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+#notebook-text {
+  flex: 1;
+  resize: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  padding: 14px;
+  color: #e8dcc0;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#notebook-text:focus {
+  outline: none;
+  border-color: #d8b04a;
+}
+
+/* Clues board */
+.corkboard-panel {
+  background: rgba(20, 15, 10, 0.98);
+  border: 1px solid #6b5a3a;
+  border-radius: 8px;
+  width: min(94vw, 900px);
+  height: min(88vh, 600px);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.corkboard-body {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  min-height: 0;
+}
+
+.corkboard-tray {
+  width: 190px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.corkboard-tray-heading {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: #a89a7a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.corkboard-tray-empty {
+  color: #6b5a3a;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.corkboard-tray-item {
+  background: rgba(216, 176, 74, 0.1);
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  padding: 8px 10px;
+  color: #e8dcc0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.corkboard-tray-item:hover {
+  background: rgba(216, 176, 74, 0.22);
+}
+
+.corkboard-scroll {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  background: #241a13;
+}
+
+.corkboard-board {
+  position: relative;
+  width: 1800px;
+  height: 1200px;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 22px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 22px),
+    #6b4a32;
+}
+
+#corkboard-connections {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#corkboard-connections line {
+  pointer-events: stroke;
+}
+
+.corkboard-pin,
+.corkboard-note {
+  position: absolute;
+  width: 170px;
+  height: 150px;
+  min-width: 130px;
+  min-height: 100px;
+  max-width: 420px;
+  max-height: 420px;
+  resize: both;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #efe3c0;
+  color: #2a2118;
+  border-radius: 2px;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+  font-family: Georgia, serif;
+}
+
+.corkboard-pin:active,
+.corkboard-note:active {
+  cursor: grabbing;
+}
+
+.corkboard-pin.linking,
+.corkboard-note.linking {
+  outline: 2px solid #d8b04a;
+}
+
+.corkboard-card-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.corkboard-card-toolbar button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: #4a3f2e;
+  font-size: 11px;
+  padding: 1px 3px;
+}
+
+.corkboard-card-toolbar button:hover {
+  color: #1a140e;
+}
+
+.corkboard-link {
+  text-decoration: underline;
+  margin-right: auto;
+}
+
+.corkboard-remove {
+  font-size: 14px;
+  line-height: 1;
+  margin-left: 4px;
+}
+
+.corkboard-card-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px;
+}
+
+.corkboard-pin-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.corkboard-pin-desc {
+  font-size: 0.9em;
+  line-height: 1.4;
+  color: #4a3f2e;
+}
+
+.corkboard-note .corkboard-card-body {
+  padding: 0;
+}
+
+.corkboard-note textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  background: transparent;
+  font-family: Georgia, serif;
+  color: #2a2118;
+  cursor: text;
+  padding: 8px 10px;
+}
+
+.corkboard-note textarea:focus {
+  outline: none;
+}

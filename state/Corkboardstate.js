@@ -62,7 +62,11 @@ export function updateTextBlock(id, text) {
   const item = state.pinned.find((p) => p.id === id);
   if (item) {
     item.text = text;
-    notify();
+    // deliberately no notify() here — same reasoning as movePinned() below.
+    // The textarea being typed into is the only thing that renders this
+    // text, and a full board re-render on every keystroke destroys and
+    // recreates the DOM node mid-input, which drops focus after each
+    // character and makes typing look broken.
   }
 }
 
@@ -75,6 +79,26 @@ export function movePinned(id, x, y) {
     // during drag for smoothness, and only need this to persist the value
   }
 }
+ 
+export function resizePinned(id, width, height) {
+  const item = state.pinned.find((p) => p.id === id);
+  if (item) {
+    item.width = width;
+    item.height = height;
+    // same reasoning as movePinned() — resizing fires continuously while
+    // the user drags the corner handle, and a re-render mid-drag would
+    // destroy the element the browser's native resize is acting on
+  }
+}
+
+export function setPinnedFontSize(id, fontSize) {
+  const item = state.pinned.find((p) => p.id === id);
+  if (item) {
+    item.fontSize = fontSize;
+    notify();
+  }
+}
+
 
 export function removePinned(id) {
   state.pinned = state.pinned.filter((p) => p.id !== id);

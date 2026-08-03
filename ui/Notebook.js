@@ -35,10 +35,23 @@ export function openNotebook() {
   initNotebook();
   overlayEl.querySelector("#notebook-text").value = getNotebookText();
   overlayEl.style.display = "flex";
+  setGameKeyboardEnabled(false);
+  overlayEl.querySelector("#notebook-text").focus();
 }
 
 export function closeNotebook() {
   if (overlayEl) overlayEl.style.display = "none";
+  setGameKeyboardEnabled(true);
+}
+
+function setGameKeyboardEnabled(enabled) {
+   const keyboard = window.game && window.game.input && window.game.input.keyboard;
+  if (!keyboard) return;
+  keyboard.enabled = enabled;
+  // .enabled alone stops Phaser from reading keys, but the DOM-level
+  // preventDefault() on captured keys (W/A/S/D) is gated by this separate
+  // flag — without clearing it too, typing those letters still gets eaten.
+  keyboard.preventDefault = enabled;
 }
 
 export function isNotebookOpen() {

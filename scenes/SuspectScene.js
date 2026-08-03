@@ -12,6 +12,7 @@ import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
 import Player from "../entities/Player.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
+import { collectClue } from "../state/corkboardState.js";
 
 // One lookup table mapping suspectId -> that suspect's whole data module.
 // This is the thing that lets this single file work for all 5 suspects.
@@ -80,7 +81,11 @@ export default class SuspectScene extends Phaser.Scene {
     this.clueMarkers = (phase1Clues ?? []).map((clue) => {
       const marker = this.add.circle(clue.x, clue.y, 8, 0xd8b04a).setStrokeStyle(2, 0xffffff);
       marker.setInteractive({ useHandCursor: true });
-      marker.on("pointerdown", () => showClue(clue.name, clue.description));
+      marker.on("pointerdown", () => {
+        showClue(clue.name, clue.description);
+        collectClue(clue, roomInfo.name);
+
+      });
       this.add.text(clue.x, clue.y - 18, "?", { fontSize: "14px", color: "#ffffff" }).setOrigin(0.5);
       return { clue, marker };
     });
@@ -116,8 +121,11 @@ export default class SuspectScene extends Phaser.Scene {
     const nearestClue = this.clueMarkers.find(({ clue }) =>
       Phaser.Math.Distance.Between(this.player.x, this.player.y, clue.x, clue.y) < INTERACT_RADIUS
     );
-    if (nearestClue) return showClue(nearestClue.clue.name, nearestClue.clue.description);
-
+    if (nearestClue) {
+      showClue(nearestClue.clue.name, nearestClue.clue.description);
+      collectClue(nearestClue.clue, this.data_.roomInfo.name);
+      return;
+    }
     const distToNpc = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.npc.x, this.npc.y);
     if (distToNpc < INTERACT_RADIUS + 20) this.openDialogue();
   }
