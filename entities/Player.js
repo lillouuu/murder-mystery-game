@@ -5,6 +5,13 @@
 
 import { PLAYER_SPEED } from "../config/constants.js";
 
+function isTypingElsewhere() {
+  const el = document.activeElement;
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+}
+
 export default class Player {
   constructor(scene, x, y, textureKey = "player") {
     this.scene = scene;
@@ -33,6 +40,11 @@ export default class Player {
   }
 
   update() {
+    if (isTypingElsewhere()) {
+      this.sprite.setVelocity(0, 0);
+      return;
+    }
+
     const left = this.cursors.left.isDown || this.wasd.A.isDown;
     const right = this.cursors.right.isDown || this.wasd.D.isDown;
     const up = this.cursors.up.isDown || this.wasd.W.isDown;

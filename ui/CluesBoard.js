@@ -29,9 +29,6 @@ const MIN_FONT_SIZE = 9;
 const MAX_FONT_SIZE = 20;
 const RESIZE_HANDLE_ZONE = 16; // px, matches roughly where the native resize grip sits
 
-//const LINK_COLORS = ["#c0392b", "#2c7a4b", "#d8b04a", "#5a6ac0"];
-//let nextColorIndex = 0;
-
 export function initCluesBoard() {
   if (overlayEl) return;
 
@@ -95,11 +92,21 @@ export function closeCluesBoard() {
   setGameKeyboardEnabled(true);
 }
 
+let savedCaptures = null;
+
 function setGameKeyboardEnabled(enabled) {
   const keyboard = window.game && window.game.input && window.game.input.keyboard;
   if (!keyboard) return;
   keyboard.enabled = enabled;
   keyboard.preventDefault = enabled;
+ 
+  if (!enabled) {
+    savedCaptures = keyboard.captures.slice();
+    keyboard.captures = [];
+  } else if (savedCaptures) {
+    keyboard.captures = savedCaptures;
+    savedCaptures = null;
+  }
 }
 
 export function isCluesBoardOpen() {

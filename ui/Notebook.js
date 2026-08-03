@@ -44,6 +44,8 @@ export function closeNotebook() {
   setGameKeyboardEnabled(true);
 }
 
+let savedCaptures = null;
+
 function setGameKeyboardEnabled(enabled) {
    const keyboard = window.game && window.game.input && window.game.input.keyboard;
   if (!keyboard) return;
@@ -52,6 +54,17 @@ function setGameKeyboardEnabled(enabled) {
   // preventDefault() on captured keys (W/A/S/D) is gated by this separate
   // flag — without clearing it too, typing those letters still gets eaten.
   keyboard.preventDefault = enabled;
+
+  if (!enabled) {
+    // Belt-and-suspenders: directly empty the capture list so nothing in
+    // it can call preventDefault() on a keystroke while we're typing,
+    // regardless of the flags above.
+    savedCaptures = keyboard.captures.slice();
+    keyboard.captures = [];
+  } else if (savedCaptures) {
+    keyboard.captures = savedCaptures;
+    savedCaptures = null;
+}
 }
 
 export function isNotebookOpen() {
