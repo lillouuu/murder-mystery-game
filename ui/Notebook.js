@@ -1,7 +1,7 @@
 // ui/Notebook.js
 // Same DOM-overlay pattern as DialogueBox / CluesBoard.
 
-import { getNotebookText, setNotebookText } from "../state/CorkboardState.js";
+import { getNotebookText, setNotebookText } from "../state/Corkboardstate.js";
 
 let overlayEl = null;
 

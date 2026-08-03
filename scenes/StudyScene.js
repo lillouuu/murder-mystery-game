@@ -7,7 +7,7 @@ import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
 import { buildRoom, placeFurniture } from "../entities/RoomBuilder.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
-import { collectClue } from "../state/CorkboardState.js";
+import { collectClue } from "../state/Corkboardstate.js";
 // "wwwwwwwwwwwwwwww"
 // 16 cols x 10 rows. W = top wall, w = bottom wall trim, D = door, . = floor
 const STUDY_GRID = [
