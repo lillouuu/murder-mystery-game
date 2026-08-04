@@ -40,6 +40,11 @@ export default class BootScene extends Phaser.Scene {
     // one plain image — named regions get carved out of it in create(),
     // since pieces span different footprints and don't slice on a grid.
     this.load.image("interiorProps", "assets/interior/props.png");
+ 
+    // Second furniture sheet — Gemini-generated, higher fidelity, used for
+    // most rooms. Pixel Crawler stays loaded too since it's still the only
+    // source with plants (Rose's conservatory needs them).
+    this.load.image("manorProps", "assets/interior/manor_props.png");
   }
 
   create() {

@@ -81,12 +81,12 @@ export function placeFurniture(scene, tileOrPair, gridX, gridY, { originX = 0, o
   scene.add.image(x, y, "tiles", tileOrPair).setScale(SCALE);
 }
 
-// One-time setup per scene: carves the named rectangles in propFrames.js
-// out of the raw "interiorProps" image so they can be placed like normal
-// sprite frames. Safe to call every scene create() — no-ops after the first.
-export function registerPropFrames(scene) {
-  const texture = scene.textures.get("interiorProps");
-  Object.entries(PROP_FRAMES).forEach(([name, { x, y, w, h }]) => {
+// One-time setup per scene: carves the named rectangles in a frame dict
+// out of a raw image texture so they can be placed like normal sprite
+// frames. Safe to call every scene create() — no-ops after the first.
+export function registerPropFrames(scene, textureKey = "interiorProps", frames = PROP_FRAMES) {
+  const texture = scene.textures.get(textureKey);
+  Object.entries(frames).forEach(([name, { x, y, w, h }]) => {
     if (texture.has(name)) return;
     texture.add(name, 0, x, y, w, h);
   });
@@ -95,8 +95,8 @@ export function registerPropFrames(scene) {
 // Places a multi-tile prop (sofa, bookshelf, fireplace, etc) with its
 // top-left corner at the given grid cell — unlike placeFurniture, these
 // don't get centered on one cell since most span several.
-export function placeProp(scene, propName, gridX, gridY, { originX = 0, originY = 0 } = {}) {
+export function placeProp(scene, propName, gridX, gridY, { originX = 0, originY = 0, texture = "interiorProps" } = {}) {
   const x = originX + gridX * TILE_SIZE;
   const y = originY + gridY * TILE_SIZE;
-  return scene.add.image(x, y, "interiorProps", propName).setOrigin(0, 0).setScale(SCALE);
+  return scene.add.image(x, y, texture, propName).setOrigin(0, 0).setScale(SCALE);
 }

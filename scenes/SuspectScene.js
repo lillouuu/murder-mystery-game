@@ -12,6 +12,8 @@ import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
 import Player from "../entities/Player.js";
 import { buildRoom, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
+import { PROP_FRAMES } from "../config/propFrames.js";
+import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
 import { collectClue } from "../state/Corkboardstate.js";
 
@@ -47,40 +49,36 @@ const ORIGIN_Y = (GAME_HEIGHT - ROOM_GRID.length * TILE_SIZE) / 2;
 // First pass by eye — nudge freely once you see it in the room.
 const FURNITURE_LAYOUT = {
   [SUSPECT_IDS.AGNES]: [
-    { prop: "STOVE", x: 2, y: 1 },
-    { prop: "ROUND_TABLE", x: 6, y: 4 },
-    { prop: "BOOKSHELF", x: 12, y: 1 },
-    { prop: "BROOM", x: 2, y: 6 },
-    { prop: "LAMP", x: 7, y: 3 }
+    { prop: "STOVE", x: 2, y: 1, texture: "manorProps" },
+    { prop: "PANTRY_SHELF", x: 6, y: 1, texture: "manorProps" },
+    { prop: "COOK_COUNTER", x: 10, y: 1, texture: "manorProps" },
+    { prop: "LONG_BENCH", x: 5, y: 5, texture: "manorProps" }
   ],
   [SUSPECT_IDS.EDWARD]: [
-    { prop: "FIREPLACE", x: 5, y: 1 },
-    { prop: "BOOKSHELF", x: 1, y: 1 },
-    { prop: "BOOKSHELF", x: 12, y: 1 },
-    { prop: "LONG_TABLE", x: 5, y: 6 },
-    { prop: "CHAIR", x: 4, y: 6 }
+    { prop: "FIREPLACE_BRICK", x: 6, y: 1, texture: "manorProps" },
+    { prop: "BOOKSHELF_BOOKS", x: 1, y: 1, texture: "manorProps" },
+    { prop: "BOOKSHELF_TALL", x: 12, y: 1, texture: "manorProps" },
+    { prop: "ARMCHAIR", x: 4, y: 6, texture: "manorProps" },
+    { prop: "CHAIR_GREEN", x: 10, y: 6, texture: "manorProps" }
   ],
   [SUSPECT_IDS.ELEANOR]: [
-    { prop: "BED", x: 2, y: 1 },
-    { prop: "WINDOW_GLASS", x: 11, y: 1 },
-    { prop: "PICTURE_FRAME", x: 7, y: 1 },
-    { prop: "CHAIR", x: 5, y: 5 }
+    { prop: "BED_CANOPY", x: 2, y: 1, texture: "manorProps" },
+    { prop: "VANITY", x: 9, y: 1, texture: "manorProps" },
+    { prop: "MIRROR", x: 9, y: 5, texture: "manorProps" },
+    { prop: "NIGHTSTAND", x: 5, y: 2, texture: "manorProps" }
   ],
   [SUSPECT_IDS.EDMUND]: [
-    { prop: "CHAIR", x: 6, y: 4 },
-    { prop: "SIDE_TABLE", x: 7, y: 4 },
-    { prop: "LAMP", x: 9, y: 4 },
-    { prop: "PICTURE_FRAME", x: 5, y: 1 },
-    { prop: "WINDOW_GLASS", x: 2, y: 1 }
+    { prop: "ARMCHAIR", x: 6, y: 4, texture: "manorProps" },
+    { prop: "CONSOLE_TABLE", x: 8, y: 5, texture: "manorProps" },
+    { prop: "LAMP_TABLE", x: 9, y: 4, texture: "manorProps" },
+    { prop: "CLOCK_GRANDFATHER", x: 2, y: 1, texture: "manorProps" }
   ],
   [SUSPECT_IDS.ROSE]: [
-    { prop: "WINDOW_GLASS", x: 2, y: 1 },
-    { prop: "WINDOW_GLASS", x: 10, y: 1 },
-    { prop: "PLANT_A", x: 2, y: 6 },
-    { prop: "PLANT_B", x: 11, y: 6 },
-    { prop: "PLANT_A", x: 7, y: 1 },
-    { prop: "PLANT_B", x: 7, y: 6 },
-    { prop: "ROUND_TABLE", x: 6, y: 4 }
+    { prop: "PLANT_A", x: 2, y: 6, texture: "interiorProps" },
+    { prop: "PLANT_B", x: 11, y: 6, texture: "interiorProps" },
+    { prop: "PLANT_A", x: 7, y: 1, texture: "interiorProps" },
+    { prop: "PLANT_B", x: 7, y: 6, texture: "interiorProps" },
+    { prop: "CONSOLE_TABLE", x: 6, y: 4, texture: "manorProps" }
   ]
 };
 
@@ -114,9 +112,10 @@ export default class SuspectScene extends Phaser.Scene {
       originY: ORIGIN_Y
     });
 
-    registerPropFrames(this);
-    (FURNITURE_LAYOUT[this.suspectId] ?? []).forEach(({ prop, x, y }) => {
-      placeProp(this, prop, x, y, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    registerPropFrames(this, "interiorProps", PROP_FRAMES);
+    registerPropFrames(this, "manorProps", MANOR_PROP_FRAMES);
+    (FURNITURE_LAYOUT[this.suspectId] ?? []).forEach(({ prop, x, y, texture }) => {
+      placeProp(this, prop, x, y, { originX: ORIGIN_X, originY: ORIGIN_Y, texture });
     });
 
     this.add.text(GAME_WIDTH / 2, ORIGIN_Y - 16, roomInfo.name, {

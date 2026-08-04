@@ -6,6 +6,7 @@ import { TILES } from "../config/tileIds.js";
 import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
 import { buildRoom, placeFurniture, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
+import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
 import { collectClue } from "../state/Corkboardstate.js";
 // "wwwwwwwwwwwwwwww"
@@ -48,11 +49,13 @@ export default class StudyScene extends Phaser.Scene {
 
     // New furniture pass — bookshelves + armchairs flanking the desk, matching
     // the reference look. Corners chosen to stay clear of the desk/rug.
-    registerPropFrames(this);
-    placeProp(this, "BOOKSHELF", 1, 1, { originX: ORIGIN_X, originY: ORIGIN_Y });
-    placeProp(this, "BOOKSHELF", 12, 1, { originX: ORIGIN_X, originY: ORIGIN_Y });
-    placeProp(this, "CHAIR", 1, 6, { originX: ORIGIN_X, originY: ORIGIN_Y });
-    placeProp(this, "CHAIR", 13, 6, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    registerPropFrames(this, "manorProps", MANOR_PROP_FRAMES);
+    placeProp(this, "BOOKSHELF_BOOKS", 1, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    placeProp(this, "BOOKSHELF_TALL", 12, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    placeProp(this, "ARMCHAIR", 1, 6, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    placeProp(this, "ARMCHAIR", 13, 6, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    placeProp(this, "BUST", 5, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    placeProp(this, "CLOCK_MANTEL", 9, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
 
     this.add.text(GAME_WIDTH / 2, ORIGIN_Y - 16, "Victor's Study", {
       fontFamily: "Georgia, serif",
