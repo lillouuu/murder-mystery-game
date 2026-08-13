@@ -31,9 +31,9 @@ async function callLLM(systemPrompt,userMessage,history=[]) {
     
 }
 
-export async function askSuspect(systemPrompt, playerQuestion, history = []) {
+export async function askSuspect(systemPrompt, playerQuestion, history = [], fallback = "I... have nothing further to say, Detective.") {
     const reply= await callLLM(systemPrompt,playerQuestion,history);
-    return reply ?? "I... have nothing further to say, Detective.";
+    return reply ?? fallback;
     
 }
 

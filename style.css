@@ -50,18 +50,25 @@ body {
   line-height: 1.5;
 }
  
-#dialogue-close {
+#dialogue-box-actions {
+  display: flex;
+  gap: 10px;
   margin-top: 12px;
+}
+
+#dialogue-close,
+#dialogue-back {
   background: #5a1f1f;
   color: #fff;
-  border: none;
+  border: 1px solid #6b5a3a;
   padding: 6px 14px;
   border-radius: 4px;
   cursor: pointer;
   font-family: Georgia, serif;
 }
- 
-#dialogue-close:hover {
+
+#dialogue-close:hover,
+#dialogue-back:hover {
   background: #7a2b2b;
 }
  
@@ -85,6 +92,71 @@ body {
  
 .dialogue-question-btn:hover {
   background: rgba(216, 176, 74, 0.25);
+}
+
+#custom-question-wrap {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #6b5a3a;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#custom-question-label {
+  flex-basis: 100%;
+  font-size: 13px;
+  color: #d8b04a;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+#custom-question-input {
+  flex: 1;
+  min-width: 160px;
+  background: rgba(216, 176, 74, 0.08);
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  padding: 8px 10px;
+  color: #e8dcc0;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+#custom-question-input::placeholder {
+  color: #8a7a5a;
+}
+
+#custom-question-input:focus {
+  outline: none;
+  border-color: #d8b04a;
+  background: rgba(216, 176, 74, 0.15);
+}
+
+#custom-question-input:disabled {
+  opacity: 0.5;
+}
+
+#custom-question-submit {
+  background: #5a1f1f;
+  color: #fff;
+  border: 1px solid #6b5a3a;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+#custom-question-submit:hover:not(:disabled) {
+  background: #7a2b2b;
+}
+
+#custom-question-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 /* Case briefing — full-screen scrollable overlay, separate from the

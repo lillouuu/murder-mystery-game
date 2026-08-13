@@ -236,29 +236,45 @@ buildSystemPrompt(groundTruthAnswer) {
 async handlePremadeQuestion(selected) {
   showAnswer(selected.question, "...");
   const context = this.buildSystemPrompt(selected.answer);
-  const aiAnswer = await askSuspect(context, selected.question, this.conversationHistory);
+  // Falls back to the suspect's own scripted answer (instead of the generic
+  // "nothing further to say" line) if the LLM call fails, so a dropped
+  // request still gives a real, in-character answer.
+  const aiAnswer = await askSuspect(context, selected.question, this.conversationHistory, selected.answer);
 
   this.conversationHistory.push(
     { role: "user", content: selected.question },
     { role: "assistant", content: aiAnswer }
   );
-  showAnswer(selected.question, aiAnswer);
+  showAnswer(selected.question, aiAnswer, () => this.openDialogue());
 }
 
 async handleCustomQuestion(text) {
-  if (this.customQuestionsAsked >= this.MAX_CUSTOM_QUESTIONS) return;
+  if (this.customQuestionsAsked >= this.MAX_CUSTOM_QUESTIONS) {
+    // TEMP DEBUG: if you see this, previous silent attempts already used
+    // up your 3 custom questions for this suspect.
+    showAnswer(text, "[debug] no custom questions left for this suspect.", () => this.openDialogue());
+    return;
+  }
   this.customQuestionsAsked++;
 
-  showAnswer(text, "...");
-  const context = this.buildSystemPrompt(null);
-  const aiAnswer = await askSuspect(context, text, this.conversationHistory);
+  // TEMP DEBUG: showAnswer updates are visible in-game with no dev tools
+  // needed, so wherever this stops updating tells us where it's stalling.
+  showAnswer(text, "[debug] building context...");
+  try {
+    const context = this.buildSystemPrompt(null);
+    showAnswer(text, "[debug] calling askSuspect...");
+    const aiAnswer = await askSuspect(context, text, this.conversationHistory);
+    showAnswer(text, "[debug] got: " + JSON.stringify(aiAnswer));
 
-  this.conversationHistory.push(
-    { role: "user", content: text },
-    { role: "assistant", content: aiAnswer }
-  );
-  showAnswer(text, aiAnswer);
-  this.openDialogue(); // refresh so the counter updates
+    this.conversationHistory.push(
+      { role: "user", content: text },
+      { role: "assistant", content: aiAnswer }
+    );
+    showAnswer(text, aiAnswer, () => this.openDialogue());
+  } catch (err) {
+    showAnswer(text, "[debug] THREW: " + err.message, () => this.openDialogue());
+    console.error("handleCustomQuestion error:", err);
+  }
 }
 
   update() {

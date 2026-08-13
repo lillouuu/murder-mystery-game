@@ -11,7 +11,10 @@ function ensureBox() {
   boxEl.innerHTML = `
     <div id="dialogue-title"></div>
     <div id="dialogue-text"></div>
-    <button id="dialogue-close">Close</button>
+    <div id="dialogue-box-actions">
+      <button id="dialogue-back" style="display:none;">Back to Questions</button>
+      <button id="dialogue-close">Close</button>
+    </div>
   `;
   document.body.appendChild(boxEl);
   boxEl.querySelector("#dialogue-close").addEventListener("click", hide);
@@ -23,12 +26,13 @@ export function showClue(name, description) {
   box.querySelector("#dialogue-title").textContent = name;
   box.querySelector("#dialogue-text").innerHTML = "";
   box.querySelector("#dialogue-text").textContent = description;
+  hideBackButton(box);
   box.style.display = "block";
 }
 
 export function showQuestions(suspectName, dialogueList ,onPickQuestion){
     const box=ensureBox();
-    box.querySelector("#dialogue-title")=suspectName;
+    box.querySelector("#dialogue-title").textContent=suspectName;
 
     const textEl=box.querySelector("#dialogue-text");
     textEl.innerHTML="";
@@ -47,15 +51,57 @@ export function showQuestions(suspectName, dialogueList ,onPickQuestion){
     box.style.display="block";
 }
 
-export function showAnswer(question, answer) {
+export function showAnswer(question, answer, onBack) {
   const box = ensureBox();
   box.querySelector("#dialogue-title").textContent = question;
   box.querySelector("#dialogue-text").textContent = answer;
+
+  const backBtn = box.querySelector("#dialogue-back");
+  if (onBack) {
+    backBtn.style.display = "inline-block";
+    // .onclick (not addEventListener) so re-calling showAnswer replaces the
+    // handler instead of stacking a new listener on the same button each time.
+    backBtn.onclick = onBack;
+  } else {
+    hideBackButton(box);
+  }
+
   box.style.display = "block";
+}
+
+function hideBackButton(box) {
+  const backBtn = box.querySelector("#dialogue-back");
+  backBtn.style.display = "none";
+  backBtn.onclick = null;
 }
 
 export function hide() {
   if (boxEl) boxEl.style.display = "none";
+  // Safety net: if the box is hidden while the custom-question input still
+  // had focus (e.g. ESC handling elsewhere), make sure movement isn't left
+  // permanently disabled.
+  setGameKeyboardEnabled(true);
+}
+
+// Same pattern as CluesBoard.js / Notebook.js: Phaser's keyboard plugin
+// captures W/A/S/D/E/Space at the window level and calls preventDefault on
+// them, which stops those characters from ever reaching a focused <input>.
+// We only need to suspend it while the custom-question field is focused.
+let savedCaptures = null;
+
+function setGameKeyboardEnabled(enabled) {
+  const keyboard = window.game && window.game.input && window.game.input.keyboard;
+  if (!keyboard) return;
+  keyboard.enabled = enabled;
+  keyboard.preventDefault = enabled;
+
+  if (!enabled) {
+    savedCaptures = keyboard.captures.slice();
+    keyboard.captures = [];
+  } else if (savedCaptures) {
+    keyboard.captures = savedCaptures;
+    savedCaptures = null;
+  }
 }
 
 export function isVisible() {
@@ -67,6 +113,7 @@ export function isVisible() {
 export function showDialogueList(npcName, questions, onSelect, customOpts = {}) {
   const box = ensureBox();
   box.querySelector("#dialogue-title").textContent = npcName;
+  hideBackButton(box);
 
   const textEl = box.querySelector("#dialogue-text");
   textEl.innerHTML = "";
@@ -112,7 +159,14 @@ export function showDialogueList(npcName, questions, onSelect, customOpts = {}) 
         customOpts.onCustomSubmit(text);
       };
       submitBtn.addEventListener("click", submit);
-      input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+      input.addEventListener("keydown", (e) => {
+        // Stop W/A/S/D/E/Space from reaching Phaser's key handlers while
+        // typing (moving the player / re-triggering "examine" mid-sentence).
+        e.stopPropagation();
+        if (e.key === "Enter") submit();
+      });
+      input.addEventListener("focus", () => setGameKeyboardEnabled(false));
+      input.addEventListener("blur", () => setGameKeyboardEnabled(true));
 
       wrap.appendChild(input);
       wrap.appendChild(submitBtn);
