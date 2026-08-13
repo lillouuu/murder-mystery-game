@@ -15,6 +15,7 @@ import { buildRoom, placeProp, registerPropFrames } from "../entities/RoomBuilde
 import { PROP_FRAMES } from "../config/propFrames.js";
 import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
+import { askSuspect } from "../services/api.js";
 import { collectClue } from "../state/Corkboardstate.js";
 
 // One lookup table mapping suspectId -> that suspect's whole data module.
@@ -103,6 +104,7 @@ export default class SuspectScene extends Phaser.Scene {
 
   create() {
     hide();
+    this.conversationHistory = [];
     const { roomInfo, suspectInfo, phase1Clues, dialogue } = this.data_;
 
     this.cameras.main.setBackgroundColor("#0d0906");
@@ -203,8 +205,23 @@ export default class SuspectScene extends Phaser.Scene {
 
   openDialogue() {
     const { suspectInfo, dialogue } = this.data_;
-    showDialogueList(suspectInfo.fullName, dialogue.phase1, (selected) => {
-      showAnswer(selected.question, selected.answer);
+    showDialogueList(suspectInfo.fullName, dialogue.phase1, async (selected) => {
+      showAnswer(selected.question, "...");
+
+      const reply = await askSuspect(
+        dialogue.phase2SystemPrompt,
+        selected.question,
+        this.conversationHistory
+      );
+
+      // askSuspect only returns null-ish on total failure (bad key, network
+      // down, etc) — fall back to the written answer instead of a generic
+      // line, so the game still plays even if Groq is unreachable.
+      const finalAnswer = reply || selected.answer;
+      showAnswer(selected.question, finalAnswer);
+
+      this.conversationHistory.push({ role: "user", content: selected.question });
+      this.conversationHistory.push({ role: "assistant", content: finalAnswer });
     });
   }
 
