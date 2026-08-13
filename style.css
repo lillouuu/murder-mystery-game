@@ -31,6 +31,8 @@ body {
   transform: translateX(-50%);
   width: 90%;
   max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
   background: rgba(15, 10, 8, 0.95);
   border: 1px solid #6b5a3a;
   border-radius: 6px;
@@ -48,6 +50,7 @@ body {
 #dialogue-text {
   font-size: 15px;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
  
 #dialogue-box-actions {
@@ -463,6 +466,64 @@ body {
 #notebook-text:focus {
   outline: none;
   border-color: #d8b04a;
+}
+
+/* Theory board (Grand Hall final accusation) — reuses .notebook-panel/.board-overlay */
+#theory-text {
+  flex: 1;
+  resize: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  padding: 14px;
+  color: #e8dcc0;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+#theory-text:focus {
+  outline: none;
+  border-color: #d8b04a;
+}
+
+#theory-text:disabled {
+  opacity: 0.6;
+}
+
+#theory-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#theory-hint {
+  font-size: 12px;
+  color: #8a7a5a;
+  font-style: italic;
+}
+
+#theory-submit {
+  background: #5a1f1f;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+#theory-submit:hover:not(:disabled) {
+  background: #7a2b2b;
+}
+
+#theory-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 /* Clues board */

@@ -219,6 +219,20 @@ buildSystemPrompt(groundTruthAnswer) {
   const { dialogue } = this.data_;
   let prompt = dialogue.phase2SystemPrompt;
 
+  // Shared style rules applied to every suspect, on top of their individual
+  // persona above. Without this the model defaults to generic roleplay-chatbot
+  // habits (self-narrated action beats, over-helpfulness) that break both the
+  // in-character illusion and the "evasive suspect" tone the personas set up.
+  prompt += `\n\nSTYLE RULES (apply to every answer, no exceptions):\n` +
+    `- Do not narrate your own body language, tone, or expressions in parentheses or asterisks ` +
+    `(no "(pausing to collect my thoughts)", no "(my eyes narrow)", no stage directions of any kind). ` +
+    `Speak only in plain spoken dialogue, first person, as if the words are being said out loud.\n` +
+    `- Never describe or hint at your own strategy, feelings about the question, or what you are ` +
+    `"attempting" to do — just answer as the character would.\n` +
+    `- Keep answers short: 1-3 sentences, like a real spoken reply in an interrogation, not a monologue.\n` +
+    `- Stay guarded and evasive in tone as befits your character; do not become warm, helpful, or ` +
+    `offer extra information the detective didn't ask for.`;
+
   if (groundTruthAnswer) {
     prompt += `\n\nGround truth for this specific question — stay factually consistent with this, ` +
       `but phrase it in your own voice, don't repeat it word for word: "${groundTruthAnswer}"`;

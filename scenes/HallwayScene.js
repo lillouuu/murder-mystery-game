@@ -66,14 +66,13 @@ export default class HallwayScene extends Phaser.Scene {
     });
 
     // Accusation — locked until every suspect has been questioned at least once.
-    // (Points at AccusationScene for now, the hardcoded phase-1 version.
-    // Swap this to SCENE_KEYS.GRAND_HALL once that scene's free-form
-    // LLM-evaluated theory flow is actually built.)
+    // Points at GrandHallScene: the player writes a free-form theory, which
+    // gets LLM-judged against the answer key, then the full truth is revealed.
     const allVisited = visited.length >= SUSPECT_LIST.length;
     const accusationY = 180 + SUSPECT_LIST.length * 44 + 20;
     const label = allVisited ? "Make Your Accusation" : "Make an Accusation (question everyone first)";
     this.makeButton(GAME_WIDTH / 2, accusationY, label, allVisited ? 0x7a2b2b : 0x2a2a2a, () => {
-      if (allVisited) this.scene.start(SCENE_KEYS.ACCUSATION);
+      if (allVisited) this.scene.start(SCENE_KEYS.GRAND_HALL);
     }, !allVisited);
   }
 
