@@ -6,7 +6,7 @@ async function callLLM(systemPrompt,userMessage,history=[]) {
             method: "POST",
             headers:{
                 "content-Type":"application/json",
-                Authhorization : `Bearer ${GROQ_API_KEY}`
+                "Authorization": `Bearer ${GROQ_API_KEY}`
             },
             body :JSON.stringify({
                 model:GROQ_MODEL,

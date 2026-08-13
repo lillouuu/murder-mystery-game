@@ -64,28 +64,62 @@ export function isVisible() {
 
 
 
-export function showDialogueList(npcName,questions,onSelect){
-    const box= ensureBox();
-    box.querySelector("#dialogue-title").textContent =npcName;
-    
-    const textEl=box.querySelector("#dialogue-text");
-    textEl.innerHTML="";
+export function showDialogueList(npcName, questions, onSelect, customOpts = {}) {
+  const box = ensureBox();
+  box.querySelector("#dialogue-title").textContent = npcName;
 
-    const list=document.createElement("div");
-    list.id="dialogue-question-list";
+  const textEl = box.querySelector("#dialogue-text");
+  textEl.innerHTML = "";
 
-    questions.forEach((q)=>{
-        const btn= document.createElement("button");
-        btn.className="dialogue-question-btn";
-        btn.textContent=q.question;
-        // arrow function here keeps its own "q" — no closure/loop-variable bug
-        btn.addEventListener("click", () => onSelect(q));
-        list.appendChild(btn);
-    })
+  const list = document.createElement("div");
+  list.id = "dialogue-question-list";
+  questions.forEach((q) => {
+    const btn = document.createElement("button");
+    btn.className = "dialogue-question-btn";
+    btn.textContent = q.question;
+    btn.addEventListener("click", () => onSelect(q));
+    list.appendChild(btn);
+  });
+  textEl.appendChild(list);
 
-    textEl.appendChild(list);
-   box.style.display = "block";
+  if (customOpts.allowCustom) {
+    const wrap = document.createElement("div");
+    wrap.id = "custom-question-wrap";
 
+    const remaining = customOpts.customRemaining ?? 0;
+    const label = document.createElement("div");
+    label.id = "custom-question-label";
+    label.textContent = remaining > 0
+      ? `Ask your own question (${remaining} left)`
+      : "No custom questions left";
+    wrap.appendChild(label);
 
+    if (remaining > 0) {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.id = "custom-question-input";
+      input.placeholder = "Type your question...";
+      input.maxLength = 150;
 
+      const submitBtn = document.createElement("button");
+      submitBtn.id = "custom-question-submit";
+      submitBtn.textContent = "Ask";
+      const submit = () => {
+        const text = input.value.trim();
+        if (!text) return;
+        input.disabled = true;
+        submitBtn.disabled = true;
+        customOpts.onCustomSubmit(text);
+      };
+      submitBtn.addEventListener("click", submit);
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+
+      wrap.appendChild(input);
+      wrap.appendChild(submitBtn);
+    }
+
+    textEl.appendChild(wrap);
+  }
+
+  box.style.display = "block";
 }

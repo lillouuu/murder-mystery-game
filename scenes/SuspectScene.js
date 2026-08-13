@@ -96,6 +96,9 @@ export default class SuspectScene extends Phaser.Scene {
   init(data) {
     this.suspectId = data.suspectId;
     this.data_ = SUSPECT_DATA[this.suspectId];
+    this.conversationHistory = [];
+    this.customQuestionsAsked = 0;
+    this.MAX_CUSTOM_QUESTIONS = 3;
 
     if (!this.data_) {
       console.error(`SuspectScene: no data found for suspectId "${this.suspectId}"`);
@@ -204,26 +207,59 @@ export default class SuspectScene extends Phaser.Scene {
   }
 
   openDialogue() {
-    const { suspectInfo, dialogue } = this.data_;
-    showDialogueList(suspectInfo.fullName, dialogue.phase1, async (selected) => {
-      showAnswer(selected.question, "...");
+  const { suspectInfo, dialogue } = this.data_;
+  showDialogueList(suspectInfo.fullName, dialogue.phase1, (selected) => this.handlePremadeQuestion(selected), {
+    allowCustom: true,
+    customRemaining: this.MAX_CUSTOM_QUESTIONS - this.customQuestionsAsked,
+    onCustomSubmit: (text) => this.handleCustomQuestion(text)
+  });
+}
 
-      const reply = await askSuspect(
-        dialogue.phase2SystemPrompt,
-        selected.question,
-        this.conversationHistory
-      );
+buildSystemPrompt(groundTruthAnswer) {
+  const { dialogue } = this.data_;
+  let prompt = dialogue.phase2SystemPrompt;
 
-      // askSuspect only returns null-ish on total failure (bad key, network
-      // down, etc) — fall back to the written answer instead of a generic
-      // line, so the game still plays even if Groq is unreachable.
-      const finalAnswer = reply || selected.answer;
-      showAnswer(selected.question, finalAnswer);
-
-      this.conversationHistory.push({ role: "user", content: selected.question });
-      this.conversationHistory.push({ role: "assistant", content: finalAnswer });
-    });
+  if (groundTruthAnswer) {
+    prompt += `\n\nGround truth for this specific question — stay factually consistent with this, ` +
+      `but phrase it in your own voice, don't repeat it word for word: "${groundTruthAnswer}"`;
   }
+
+  const collected = this.registry.get("collectedClues") || [];
+  const relevant = collected.filter(c => c.suspectId === this.suspectId).map(c => c.name);
+  if (relevant.length) {
+    prompt += `\n\nThe detective has already found these clues about you: ${relevant.join(", ")}.`;
+  }
+
+  return prompt;
+}
+
+async handlePremadeQuestion(selected) {
+  showAnswer(selected.question, "...");
+  const context = this.buildSystemPrompt(selected.answer);
+  const aiAnswer = await askSuspect(context, selected.question, this.conversationHistory);
+
+  this.conversationHistory.push(
+    { role: "user", content: selected.question },
+    { role: "assistant", content: aiAnswer }
+  );
+  showAnswer(selected.question, aiAnswer);
+}
+
+async handleCustomQuestion(text) {
+  if (this.customQuestionsAsked >= this.MAX_CUSTOM_QUESTIONS) return;
+  this.customQuestionsAsked++;
+
+  showAnswer(text, "...");
+  const context = this.buildSystemPrompt(null);
+  const aiAnswer = await askSuspect(context, text, this.conversationHistory);
+
+  this.conversationHistory.push(
+    { role: "user", content: text },
+    { role: "assistant", content: aiAnswer }
+  );
+  showAnswer(text, aiAnswer);
+  this.openDialogue(); // refresh so the counter updates
+}
 
   update() {
     this.player.update();
