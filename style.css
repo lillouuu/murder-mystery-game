@@ -526,6 +526,49 @@ body {
   cursor: default;
 }
 
+/* Forensic report panel — reuses .notebook-panel/.board-overlay */
+.forensic-panel {
+  overflow: hidden;
+}
+
+#forensic-meta {
+  font-size: 13px;
+  color: #a89a7a;
+  line-height: 1.6;
+  border-bottom: 1px solid #3a3028;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+#forensic-findings {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.forensic-finding {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #3a3028;
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.forensic-finding-title {
+  font-family: Georgia, serif;
+  color: #d8b04a;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.forensic-finding-detail {
+  font-size: 13px;
+  color: #e8dcc0;
+  line-height: 1.55;
+}
+
 /* Clues board */
 .corkboard-panel {
   background: rgba(20, 15, 10, 0.98);

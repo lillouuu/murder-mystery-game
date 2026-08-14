@@ -4,6 +4,7 @@ import TitleScene from "./scenes/TitleScene.js";
 import StudyScene from "./scenes/StudyScene.js";
 import SuspectScene from "./scenes/SuspectScene.js";
 import GrandHallScene from "./scenes/GrandHallScene.js";
+import ForensicReportScene from "./scenes/ForensicReportScene.js";
 import HallwayScene from "./scenes/HallwayScene.js";
 import BriefingScene from "./scenes/BriefingScene.js";
 import IntroScene from "./scenes/IntroScene.js";
@@ -19,7 +20,7 @@ const config = {
     default: "arcade",
     arcade: { gravity: { y: 0 }, debug: false }
    },
-    scene: [BootScene, TitleScene, IntroScene,StudyScene, SuspectScene, HallwayScene, GrandHallScene, BriefingScene]
+    scene: [BootScene, TitleScene, IntroScene,StudyScene, SuspectScene, HallwayScene, ForensicReportScene, GrandHallScene, BriefingScene]
 
 };
 

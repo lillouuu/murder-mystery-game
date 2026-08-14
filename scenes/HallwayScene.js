@@ -65,11 +65,23 @@ export default class HallwayScene extends Phaser.Scene {
       });
     });
 
+    // Forensic report — released once every suspect has been questioned.
+    // Opening it auto-adds every finding to the clues board, no clicking
+    // required.
+    const allVisited = visited.length >= SUSPECT_LIST.length;
+    const reportRead = this.registry.get("forensicReportRead") || false;
+    const reportY = 180 + SUSPECT_LIST.length * 44 + 20;
+    const reportLabel = allVisited
+      ? `${reportRead ? "✓ " : ""}Read Forensic Report`
+      : "Forensic Report (question everyone first)";
+    this.makeButton(GAME_WIDTH / 2, reportY, reportLabel, allVisited ? 0x33291f : 0x2a2a2a, () => {
+      if (allVisited) this.scene.start(SCENE_KEYS.FORENSIC_REPORT);
+    }, !allVisited);
+
     // Accusation — locked until every suspect has been questioned at least once.
     // Points at GrandHallScene: the player writes a free-form theory, which
     // gets LLM-judged against the answer key, then the full truth is revealed.
-    const allVisited = visited.length >= SUSPECT_LIST.length;
-    const accusationY = 180 + SUSPECT_LIST.length * 44 + 20;
+    const accusationY = reportY + 44;
     const label = allVisited ? "Make Your Accusation" : "Make an Accusation (question everyone first)";
     this.makeButton(GAME_WIDTH / 2, accusationY, label, allVisited ? 0x7a2b2b : 0x2a2a2a, () => {
       if (allVisited) this.scene.start(SCENE_KEYS.GRAND_HALL);

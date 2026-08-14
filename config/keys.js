@@ -11,7 +11,7 @@ export const SCENE_KEYS = {
   HALLWAY: "HallwayScene",
   SUSPECT: "SuspectScene",
   GRAND_HALL: "GrandHallScene",
-  ACCUSATION: "AccusationScene",
+  FORENSIC_REPORT: "ForensicReportScene",
   BRIEFING: "BriefingScene"
   
 };
@@ -46,4 +46,3 @@ export const ANIM_KEYS = {
   WALK_RIGHT: "walk-right",
   WALK_UP: "walk-up"
 };
-

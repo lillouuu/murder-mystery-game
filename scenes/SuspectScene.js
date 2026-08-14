@@ -16,7 +16,7 @@ import { PROP_FRAMES } from "../config/propFrames.js";
 import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
 import { askSuspect } from "../services/api.js";
-import { collectClue } from "../state/Corkboardstate.js";
+import { collectClue, getCollectedClues } from "../state/Corkboardstate.js";
 
 // One lookup table mapping suspectId -> that suspect's whole data module.
 // This is the thing that lets this single file work for all 5 suspects.
@@ -229,7 +229,6 @@ buildSystemPrompt(groundTruthAnswer) {
     `Speak only in plain spoken dialogue, first person, as if the words are being said out loud.\n` +
     `- Never describe or hint at your own strategy, feelings about the question, or what you are ` +
     `"attempting" to do — just answer as the character would.\n` +
-    `- Keep answers short: 1-3 sentences, like a real spoken reply in an interrogation, not a monologue.\n` +
     `- Stay guarded and evasive in tone as befits your character; do not become warm, helpful, or ` +
     `offer extra information the detective didn't ask for.`;
 
@@ -238,7 +237,10 @@ buildSystemPrompt(groundTruthAnswer) {
       `but phrase it in your own voice, don't repeat it word for word: "${groundTruthAnswer}"`;
   }
 
-  const collected = this.registry.get("collectedClues") || [];
+  // Was `this.registry.get("collectedClues")` — that Phaser-registry key was
+  // never set anywhere; clues actually live in Corkboardstate.js, which is
+  // what collectClue() (used everywhere clues get picked up) writes to.
+  const collected = getCollectedClues();
   const relevant = collected.filter(c => c.suspectId === this.suspectId).map(c => c.name);
   if (relevant.length) {
     prompt += `\n\nThe detective has already found these clues about you: ${relevant.join(", ")}.`;
