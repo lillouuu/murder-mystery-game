@@ -18,6 +18,7 @@
 import { TILE_SIZE } from "../config/constants.js";
 import { TILES } from "../config/tileIds.js";
 import { PROP_FRAMES } from "../config/propFrames.js";
+import { NES_PROP_FRAMES } from "../config/nesPropFrames.js";
 
 const SOURCE_TILE_SIZE = 16; // actual pixel size in the Kenney sheet
 const SCALE = TILE_SIZE / SOURCE_TILE_SIZE; // 32 / 16 = 2x, so rooms don't look tiny
@@ -99,4 +100,44 @@ export function placeProp(scene, propName, gridX, gridY, { originX = 0, originY 
   const x = originX + gridX * TILE_SIZE;
   const y = originY + gridY * TILE_SIZE;
   return scene.add.image(x, y, texture, propName).setOrigin(0, 0).setScale(SCALE);
+}
+
+// Same job as buildRoom(), but draws floor/wall/door from the new NES
+// mansion sheet (named frames on the "nesProps" texture) instead of
+// numeric frames on the old "tiles" spritesheet. Furniture still goes
+// through the existing placeProp()/registerPropFrames() pair -- this
+// function only replaces the grid pass.
+export function buildRoomNES(scene, grid, { originX = 0, originY = 0, floorFrame = "FLOOR", wallFrame = "WALL_BASE", doorFrame = "DOOR" } = {}) {
+  const wallGroup = scene.physics.add.staticGroup();
+  const doorZones = [];
+
+  registerPropFrames(scene, "nesProps", NES_PROP_FRAMES); // no-op after first call
+
+  const rows = grid.map((row) => row.split(""));
+
+  rows.forEach((row, ry) => {
+    row.forEach((cell, cx) => {
+      const x = originX + cx * TILE_SIZE + TILE_SIZE / 2;
+      const y = originY + ry * TILE_SIZE + TILE_SIZE / 2;
+
+      if (cell === ".") {
+        scene.add.image(x, y, "nesProps", floorFrame).setScale(SCALE);
+      } else if (cell === "W" || cell === "w") {
+        scene.add.image(x, y, "nesProps", floorFrame).setScale(SCALE);
+        const wall = wallGroup.create(x, y, "nesProps", wallFrame);
+        wall.setScale(SCALE);
+        wall.setSize(SOURCE_TILE_SIZE, SOURCE_TILE_SIZE);
+      } else if (cell === "D") {
+        scene.add.image(x, y, "nesProps", floorFrame).setScale(SCALE);
+        // DOOR frame is 2 cells tall -- anchor its bottom to this cell's
+        // bottom edge so it rises into the wall row above it.
+        scene.add.image(x, y + TILE_SIZE / 2, "nesProps", doorFrame)
+          .setOrigin(0.5, 1)
+          .setScale(SCALE);
+        doorZones.push({ x, y });
+      }
+    });
+  });
+
+  return { wallGroup, doorZones };
 }

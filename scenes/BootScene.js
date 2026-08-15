@@ -45,6 +45,12 @@ export default class BootScene extends Phaser.Scene {
     // most rooms. Pixel Crawler stays loaded too since it's still the only
     // source with plants (Rose's conservatory needs them).
     this.load.image("manorProps", "assets/interior/manor_props.png");
+
+    // New tileset -- hand-drawn NES-style mansion sheet. Loaded as a plain
+    // image (like manorProps) since pieces are packed tight with irregular
+    // footprints -- named regions come from config/nesPropFrames.js via
+    // registerPropFrames(), not a uniform grid.
+    this.load.image("nesProps", "assets/interior/nes_mansion_tileset.png");
   }
 
   create() {

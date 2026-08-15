@@ -11,9 +11,8 @@ import { eleanorData } from "../data/suspects/eleanor.data.js";
 import { edmundData } from "../data/suspects/edmund.data.js";
 import { roseData } from "../data/suspects/rose.data.js";
 import Player from "../entities/Player.js";
-import { buildRoom, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
-import { PROP_FRAMES } from "../config/propFrames.js";
-import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
+import { buildRoomNES, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
+import { NES_PROP_FRAMES } from "../config/nesPropFrames.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
 import { askSuspect } from "../services/api.js";
 import { collectClue, getCollectedClues } from "../state/Corkboardstate.js";
@@ -45,41 +44,103 @@ const ROOM_GRID = [
 const ORIGIN_X = (GAME_WIDTH - ROOM_GRID[0].length * TILE_SIZE) / 2;
 const ORIGIN_Y = (GAME_HEIGHT - ROOM_GRID.length * TILE_SIZE) / 2;
 
-// Furniture per suspect, from the new Pixel Crawler interior props sheet.
+// Furniture per suspect, from the new NES mansion tileset (nesProps).
 // { prop, x, y } — x/y are grid cells, prop's top-left corner lands there.
 // First pass by eye — nudge freely once you see it in the room.
 const FURNITURE_LAYOUT = {
-  [SUSPECT_IDS.AGNES]: [
-    { prop: "STOVE", x: 2, y: 1, texture: "manorProps" },
-    { prop: "PANTRY_SHELF", x: 6, y: 1, texture: "manorProps" },
-    { prop: "COOK_COUNTER", x: 10, y: 1, texture: "manorProps" },
-    { prop: "LONG_BENCH", x: 5, y: 5, texture: "manorProps" }
+  [SUSPECT_IDS.AGNES]: [ // kitchen — bustling prep room, dual counters, staff table
+    { prop: "SINK", x: 1, y: 1, texture: "nesProps" },
+    { prop: "COOKER", x: 2.1, y: 1, texture: "nesProps" },
+    { prop: "KITCHEN_STAND", x: 3.2, y: 1, texture: "nesProps" },
+    { prop: "KITCHEN_STAND", x: 4.2, y: 1, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 5.3, y: 1, texture: "nesProps" },
+    { prop: "CLOCK", x: 11.8, y: 0.5, texture: "nesProps" },
+    { prop: "FRIDGE", x: 13, y: 0.5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 1, y: 3.0, texture: "nesProps" },
+    { prop: "WASHER", x: 13, y: 3.1, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 1, y: 5.6, texture: "nesProps" },
+    { prop: "SOFA_BACK_DOWN", x: 7.0, y: 2.0, texture: "nesProps" },
+    { prop: "DINING_TABLE", x: 6.5, y: 3.5, texture: "nesProps" },
+    { prop: "SOFA_BACK_UP", x: 7.0, y: 5.6, texture: "nesProps" },
+    { prop: "PLANTS", x: 13, y: 6.5, texture: "nesProps" }
   ],
-  [SUSPECT_IDS.EDWARD]: [
-    { prop: "FIREPLACE_BRICK", x: 6, y: 1, texture: "manorProps" },
-    { prop: "BOOKSHELF_BOOKS", x: 1, y: 1, texture: "manorProps" },
-    { prop: "BOOKSHELF_TALL", x: 12, y: 1, texture: "manorProps" },
-    { prop: "ARMCHAIR", x: 4, y: 6, texture: "manorProps" },
-    { prop: "CHAIR_GREEN", x: 10, y: 6, texture: "manorProps" }
+  [SUSPECT_IDS.EDWARD]: [ // library — towering book wall, reading nook, cataloging desk
+    { prop: "HUGE_CUPBOARD", x: 1, y: 0.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 4, y: 0.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 7, y: 0.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 10, y: 0.5, texture: "nesProps" },
+    { prop: "CLOCK", x: 13.5, y: 0.5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 1, y: 3.2, texture: "nesProps" },
+    { prop: "PIC", x: 13, y: 3.8, texture: "nesProps" },
+    { prop: "RUG", x: 10.2, y: 4.3, texture: "nesProps" },
+    { prop: "TABLE_STUDY", x: 4.5, y: 4.9, texture: "nesProps" },
+    { prop: "DOUBLE_SOFA_ABOVE", x: 10.5, y: 3.5, texture: "nesProps" },
+    { prop: "DOUBLE_SOFA_BACK", x: 10.5, y: 6.0, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 1, y: 5.8, texture: "nesProps" },
+    { prop: "SOFA_BACK_UP", x: 5.0, y: 6.2, texture: "nesProps" },
+    { prop: "PLANTS", x: 12.7, y: 6.5, texture: "nesProps" },
+    { prop: "PLANTS", x: 3, y: 7.5, texture: "nesProps" },
+    { prop: "NIGHT_STAND", x: 11, y: 7.5, texture: "nesProps" }
   ],
-  [SUSPECT_IDS.ELEANOR]: [
-    { prop: "BED_CANOPY", x: 2, y: 1, texture: "manorProps" },
-    { prop: "VANITY", x: 9, y: 1, texture: "manorProps" },
-    { prop: "MIRROR", x: 9, y: 5, texture: "manorProps" },
-    { prop: "NIGHTSTAND", x: 5, y: 2, texture: "manorProps" }
+  [SUSPECT_IDS.ELEANOR]: [ // bedroom — lavish boudoir, mirrors, wardrobes, dressing sofa
+    { prop: "NIGHT_STAND", x: 0.4, y: 1, texture: "nesProps" },
+    { prop: "DOUBLE_BED", x: 1.5, y: 1, texture: "nesProps" },
+    { prop: "NIGHT_STAND", x: 3.3, y: 1, texture: "nesProps" },
+    { prop: "MIRROR", x: 6, y: 1, texture: "nesProps" },
+    { prop: "SMALL_MIRROR", x: 7.3, y: 0.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 10, y: 1, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 13, y: 1, texture: "nesProps" },
+    { prop: "PIC", x: 4.5, y:1, texture: "nesProps" },
+    { prop: "RUG", x: 10.2, y: 5.5, texture: "nesProps" },
+    { prop: "SOFA2_LEFT", x: 9.2, y: 5, texture: "nesProps" },
+    { prop: "SOFA2_RIGHT", x: 12.4, y: 5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 1, y: 5.5, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 14, y: 9, texture: "nesProps" },
+    { prop: "PLANTS", x: 12, y: 9, texture: "nesProps" }
   ],
-  [SUSPECT_IDS.EDMUND]: [
-    { prop: "ARMCHAIR", x: 6, y: 4, texture: "manorProps" },
-    { prop: "CONSOLE_TABLE", x: 8, y: 5, texture: "manorProps" },
-    { prop: "LAMP_TABLE", x: 9, y: 4, texture: "manorProps" },
-    { prop: "CLOCK_GRANDFATHER", x: 2, y: 1, texture: "manorProps" }
+  [SUSPECT_IDS.EDMUND]: [ // parlor — entertainment salon, billiards, cards, two sofas
+    { prop: "CUPBOARD", x: 1, y: 0.5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 2, y: 0.5, texture: "nesProps" },
+    { prop: "PIC", x: 5, y: 0.5, texture: "nesProps" },
+    { prop: "PIC", x: 6.5, y: 0.5, texture: "nesProps" },
+    { prop: "PIC", x: 8, y: 0.5, texture: "nesProps" },
+    { prop: "CLOCK", x: 13.5, y: 0.5, texture: "nesProps" },
+    { prop: "BILLIARD_TABLE", x: 4.5, y: 4.0, texture: "nesProps" },
+    { prop: "DINING_TABLE", x: 10, y: 1.7, texture: "nesProps" },
+    { prop: "RUG", x: 12.5, y: 5.8, texture: "nesProps" },
+    { prop: "SOFA2_LEFT", x: 11.2, y: 5.8, texture: "nesProps" },
+    { prop: "SOFA2_RIGHT", x: 14.5, y: 5.8, texture: "nesProps" },
+    { prop: "DOUBLE_SOFA_ABOVE", x: 12.5, y: 4.5, texture: "nesProps" },
+    { prop: "DOUBLE_SOFA_BACK", x: 12.5, y: 7.7, texture: "nesProps" },
+    { prop: "PLANTS", x: 4, y: 8.5, texture: "nesProps" },
+    { prop: "PLANTS", x: 5, y: 8.5, texture: "nesProps" },
+    { prop: "PLANTS", x: 3, y: 8.5, texture: "nesProps" },
+    { prop: "PLANTS", x: 2, y: 8.5, texture: "nesProps" }
   ],
-  [SUSPECT_IDS.ROSE]: [
-    { prop: "PLANT_A", x: 2, y: 6, texture: "interiorProps" },
-    { prop: "PLANT_B", x: 11, y: 6, texture: "interiorProps" },
-    { prop: "PLANT_A", x: 7, y: 1, texture: "interiorProps" },
-    { prop: "PLANT_B", x: 7, y: 6, texture: "interiorProps" },
-    { prop: "CONSOLE_TABLE", x: 6, y: 4, texture: "manorProps" }
+  [SUSPECT_IDS.ROSE]: [ // conservatory — greenhouse, dense with plants, no
+    // furniture in the middle. Table removed, plants filled in across 4 rows.
+    { prop: "PLANT", x: 2, y: 2, texture: "nesProps" },
+    { prop: "PLANT", x: 4, y: 2, texture: "nesProps" },
+    { prop: "PLANT", x: 6, y: 2, texture: "nesProps" },
+    { prop: "PLANT", x: 8, y: 2, texture: "nesProps" },
+    { prop: "PLANT", x: 10, y: 2, texture: "nesProps" },
+    { prop: "PLANT", x: 12, y: 2, texture: "nesProps" },
+    { prop: "PLANTS", x: 2, y: 4, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 4.2, y: 4, texture: "nesProps" },
+    { prop: "PLANTS", x: 6.4, y: 4, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 8.6, y: 4, texture: "nesProps" },
+    { prop: "PLANTS", x: 10.8, y: 4, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 13, y: 4, texture: "nesProps" },
+    { prop: "WALKWAY_H", x: 2, y: 6, texture: "nesProps" },
+    { prop: "WALKWAY_H", x: 3.2, y: 6, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 6, y: 6, texture: "nesProps" },
+    { prop: "PLANTS", x: 8, y: 6, texture: "nesProps" },
+    { prop: "WALKWAY_H", x: 11, y: 6, texture: "nesProps" },
+    { prop: "WALKWAY_H", x: 12.2, y: 6, texture: "nesProps" },
+    { prop: "PLANT", x: 2, y: 7.5, texture: "nesProps" },
+    { prop: "PLANT", x: 4, y: 7.5, texture: "nesProps" },
+    { prop: "PLANT", x: 10, y: 7.5, texture: "nesProps" },
+    { prop: "PLANT", x: 12, y: 7.5, texture: "nesProps" }
   ]
 };
 
@@ -112,13 +173,15 @@ export default class SuspectScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor("#0d0906");
 
-    const { wallGroup } = buildRoom(this, ROOM_GRID, {
+    const { wallGroup } = buildRoomNES(this, ROOM_GRID, {
       originX: ORIGIN_X,
-      originY: ORIGIN_Y
+      originY: ORIGIN_Y,
+      floorFrame: this.suspectId === SUSPECT_IDS.ROSE ? "FLOOR_GARDEN" : "FLOOR",
+      wallFrame: this.suspectId === SUSPECT_IDS.ROSE ? "WALL_PLANTS" : "WALL_BASE",
+      doorFrame: this.suspectId === SUSPECT_IDS.ROSE ? "DOOR_OPEN" : "DOOR"
     });
 
-    registerPropFrames(this, "interiorProps", PROP_FRAMES);
-    registerPropFrames(this, "manorProps", MANOR_PROP_FRAMES);
+    registerPropFrames(this, "nesProps", NES_PROP_FRAMES);
     (FURNITURE_LAYOUT[this.suspectId] ?? []).forEach(({ prop, x, y, texture }) => {
       placeProp(this, prop, x, y, { originX: ORIGIN_X, originY: ORIGIN_Y, texture });
     });

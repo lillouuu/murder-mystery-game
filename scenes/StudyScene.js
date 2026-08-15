@@ -2,11 +2,10 @@
 
 import { GAME_WIDTH, GAME_HEIGHT, INTERACT_RADIUS, TILE_SIZE } from "../config/constants.js";
 import { SCENE_KEYS } from "../config/keys.js";
-import { TILES } from "../config/tileIds.js";
 import { studyData } from "../data/study.data.js";
 import Player from "../entities/Player.js";
-import { buildRoom, placeFurniture, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
-import { MANOR_PROP_FRAMES } from "../config/manorPropFrames.js";
+import { buildRoomNES, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
+import { NES_PROP_FRAMES } from "../config/nesPropFrames.js";
 import { showClue, hide, isVisible } from "../ui/DialogueBox.js";
 import { collectClue } from "../state/Corkboardstate.js";
 // "wwwwwwwwwwwwwwww"
@@ -38,24 +37,41 @@ export default class StudyScene extends Phaser.Scene {
     hide(); // close any dialogue box left open from the previous room
     this.cameras.main.setBackgroundColor("#0d0906");
 
-    const { wallGroup, doorZones } = buildRoom(this, STUDY_GRID, {
+    const { wallGroup, doorZones } = buildRoomNES(this, STUDY_GRID, {
       originX: ORIGIN_X,
       originY: ORIGIN_Y
     });
     this.doorZones = doorZones;
 
-    // Desk, roughly centered — where the body/clues cluster
-    placeFurniture(this, TILES.DESK, 7, 4, { originX: ORIGIN_X, originY: ORIGIN_Y });
+    // Densely packed scholarly study — wall-to-wall cupboards as a research
+    // library, central desk (table+chair+rug), a small gallery of pictures,
+    // and a bit of greenery. From the Gemini-planned layout.
+    registerPropFrames(this, "nesProps", NES_PROP_FRAMES);
 
-    // New furniture pass — bookshelves + armchairs flanking the desk, matching
-    // the reference look. Corners chosen to stay clear of the desk/rug.
-    registerPropFrames(this, "manorProps", MANOR_PROP_FRAMES);
-    placeProp(this, "BOOKSHELF_BOOKS", 1, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
-    placeProp(this, "BOOKSHELF_TALL", 12, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
-    placeProp(this, "ARMCHAIR", 1, 6, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
-    placeProp(this, "ARMCHAIR", 13, 6, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
-    placeProp(this, "BUST", 5, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
-    placeProp(this, "CLOCK_MANTEL", 9, 1, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "manorProps" });
+    // left wall: unbroken row of cupboards forming the library wall
+    placeProp(this, "HUGE_CUPBOARD", 1, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "HUGE_CUPBOARD", 4, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "HUGE_CUPBOARD", 7, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "CLOCK", 13, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "CUPBOARD", 14, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+
+    // evidence/ledger cabinet, lower-left
+    placeProp(this, "CUPBOARD", 1, 5.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+
+    // central desk: table + chair + rug underneath
+    placeProp(this, "RUG", 5.8, 4.7, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "TABLE_STUDY", 5.5, 4.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "SOFA_BACK_UP", 6.0, 6.2, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+
+    // small portrait gallery, right wall
+    placeProp(this, "PIC", 10, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "PIC", 11.5, 0.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+
+    // greenery accents
+    placeProp(this, "PLANTS", 1, 3.2, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "PLANTS_1", 13.5, 6.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "PLANTS_1", 15.5, 6.5, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
+    placeProp(this, "PLANT", 10, 2.2, { originX: ORIGIN_X, originY: ORIGIN_Y, texture: "nesProps" });
 
     this.add.text(GAME_WIDTH / 2, ORIGIN_Y - 16, "Victor's Study", {
       fontFamily: "Georgia, serif",
