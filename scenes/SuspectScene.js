@@ -14,6 +14,8 @@ import Player from "../entities/Player.js";
 import { buildRoomNES, placeProp, registerPropFrames } from "../entities/RoomBuilder.js";
 import { NES_PROP_FRAMES } from "../config/nesPropFrames.js";
 import { showClue, showDialogueList, showAnswer, hide, isVisible } from "../ui/DialogueBox.js";
+import { showDossier, hideBriefing } from "../ui/BriefingPanel.js";
+import { buildCaseFileRoster } from "../data/caseFileRoster.js";
 import { askSuspect } from "../services/api.js";
 import { collectClue, getCollectedClues } from "../state/Corkboardstate.js";
 
@@ -52,27 +54,30 @@ const FURNITURE_LAYOUT = {
     { prop: "SINK", x: 1, y: 1, texture: "nesProps" },
     { prop: "COOKER", x: 2.1, y: 1, texture: "nesProps" },
     { prop: "KITCHEN_STAND", x: 3.2, y: 1, texture: "nesProps" },
-    { prop: "KITCHEN_STAND", x: 4.2, y: 1, texture: "nesProps" },
-    { prop: "PLANTS_1", x: 5.3, y: 1, texture: "nesProps" },
+    { prop: "KITCHEN_STAND", x: 4.0, y: 1, texture: "nesProps" },
+    { prop: "KITCHEN_STAND", x: 4.8, y: 1, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 7.3, y: 1, texture: "nesProps" },
     { prop: "CLOCK", x: 11.8, y: 0.5, texture: "nesProps" },
     { prop: "FRIDGE", x: 13, y: 0.5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 14, y: 0.5, texture: "nesProps" },
     { prop: "CUPBOARD", x: 1, y: 3.0, texture: "nesProps" },
     { prop: "WASHER", x: 13, y: 3.1, texture: "nesProps" },
     { prop: "CUPBOARD", x: 1, y: 5.6, texture: "nesProps" },
     { prop: "SOFA_BACK_DOWN", x: 7.0, y: 2.0, texture: "nesProps" },
     { prop: "DINING_TABLE", x: 6.5, y: 3.5, texture: "nesProps" },
     { prop: "SOFA_BACK_UP", x: 7.0, y: 5.6, texture: "nesProps" },
-    { prop: "PLANTS", x: 13, y: 6.5, texture: "nesProps" }
+    { prop: "PLANTS_1", x: 13, y: 8, texture: "nesProps" },
+    { prop: "PLANTS_1", x: 14, y: 8, texture: "nesProps" }
   ],
   [SUSPECT_IDS.EDWARD]: [ // library — towering book wall, reading nook, cataloging desk
     { prop: "HUGE_CUPBOARD", x: 1, y: 0.5, texture: "nesProps" },
     { prop: "HUGE_CUPBOARD", x: 4, y: 0.5, texture: "nesProps" },
     { prop: "HUGE_CUPBOARD", x: 7, y: 0.5, texture: "nesProps" },
     { prop: "HUGE_CUPBOARD", x: 10, y: 0.5, texture: "nesProps" },
-    { prop: "CLOCK", x: 13.5, y: 0.5, texture: "nesProps" },
+    { prop: "CLOCK", x: 14, y: 0.5, texture: "nesProps" },
     { prop: "CUPBOARD", x: 1, y: 3.2, texture: "nesProps" },
-    { prop: "PIC", x: 13, y: 3.8, texture: "nesProps" },
-    { prop: "RUG", x: 10.2, y: 4.3, texture: "nesProps" },
+    { prop: "PIC", x: 13, y: 0.5, texture: "nesProps" },
+    { prop: "RUG", x: 10.5, y: 4.3, texture: "nesProps" },
     { prop: "TABLE_STUDY", x: 4.5, y: 4.9, texture: "nesProps" },
     { prop: "DOUBLE_SOFA_ABOVE", x: 10.5, y: 3.5, texture: "nesProps" },
     { prop: "DOUBLE_SOFA_BACK", x: 10.5, y: 6.0, texture: "nesProps" },
@@ -83,15 +88,15 @@ const FURNITURE_LAYOUT = {
     { prop: "NIGHT_STAND", x: 11, y: 7.5, texture: "nesProps" }
   ],
   [SUSPECT_IDS.ELEANOR]: [ // bedroom — lavish boudoir, mirrors, wardrobes, dressing sofa
-    { prop: "NIGHT_STAND", x: 0.4, y: 1, texture: "nesProps" },
-    { prop: "DOUBLE_BED", x: 1.5, y: 1, texture: "nesProps" },
-    { prop: "NIGHT_STAND", x: 3.3, y: 1, texture: "nesProps" },
-    { prop: "MIRROR", x: 6, y: 1, texture: "nesProps" },
+    { prop: "NIGHT_STAND", x: 0.4, y: 0.5, texture: "nesProps" },
+    { prop: "DOUBLE_BED", x: 1.5, y: 0.5, texture: "nesProps" },
+    { prop: "NIGHT_STAND", x: 3.3, y: 0.5, texture: "nesProps" },
+    { prop: "MIRROR", x: 6, y: 0.5, texture: "nesProps" },
     { prop: "SMALL_MIRROR", x: 7.3, y: 0.5, texture: "nesProps" },
-    { prop: "HUGE_CUPBOARD", x: 10, y: 1, texture: "nesProps" },
-    { prop: "HUGE_CUPBOARD", x: 13, y: 1, texture: "nesProps" },
-    { prop: "PIC", x: 4.5, y:1, texture: "nesProps" },
-    { prop: "RUG", x: 10.2, y: 5.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 10, y: 0.5, texture: "nesProps" },
+    { prop: "HUGE_CUPBOARD", x: 13, y: 0.5, texture: "nesProps" },
+    { prop: "PIC", x: 4.5, y:0.5, texture: "nesProps" },
+    { prop: "RUG", x: 10.4, y: 5.5, texture: "nesProps" },
     { prop: "SOFA2_LEFT", x: 9.2, y: 5, texture: "nesProps" },
     { prop: "SOFA2_RIGHT", x: 12.4, y: 5, texture: "nesProps" },
     { prop: "CUPBOARD", x: 1, y: 5.5, texture: "nesProps" },
@@ -101,18 +106,20 @@ const FURNITURE_LAYOUT = {
   [SUSPECT_IDS.EDMUND]: [ // parlor — entertainment salon, billiards, cards, two sofas
     { prop: "CUPBOARD", x: 1, y: 0.5, texture: "nesProps" },
     { prop: "CUPBOARD", x: 2, y: 0.5, texture: "nesProps" },
+    { prop: "CUPBOARD", x: 3, y: 0.5, texture: "nesProps" },
     { prop: "PIC", x: 5, y: 0.5, texture: "nesProps" },
     { prop: "PIC", x: 6.5, y: 0.5, texture: "nesProps" },
     { prop: "PIC", x: 8, y: 0.5, texture: "nesProps" },
-    { prop: "CLOCK", x: 13.5, y: 0.5, texture: "nesProps" },
+    { prop: "CLOCK", x: 13.5, y: 1, texture: "nesProps" },
     { prop: "BILLIARD_TABLE", x: 4.5, y: 4.0, texture: "nesProps" },
     { prop: "DINING_TABLE", x: 10, y: 1.7, texture: "nesProps" },
     { prop: "RUG", x: 12.5, y: 5.8, texture: "nesProps" },
-    { prop: "SOFA2_LEFT", x: 11.2, y: 5.8, texture: "nesProps" },
-    { prop: "SOFA2_RIGHT", x: 14.5, y: 5.8, texture: "nesProps" },
+    { prop: "SOFA2_LEFT", x: 11, y: 5.8, texture: "nesProps" },
+    { prop: "SOFA2_RIGHT", x: 14, y: 5.8, texture: "nesProps" },
     { prop: "DOUBLE_SOFA_ABOVE", x: 12.5, y: 4.5, texture: "nesProps" },
     { prop: "DOUBLE_SOFA_BACK", x: 12.5, y: 7.7, texture: "nesProps" },
-    { prop: "PLANTS", x: 4, y: 8.5, texture: "nesProps" },
+    { prop: "NIGHT_STAND", x: 3, y: 7.5, texture: "nesProps" },
+    { prop: "PLANTS", x: 0.75, y: 8.5, texture: "nesProps" },
     { prop: "PLANTS", x: 5, y: 8.5, texture: "nesProps" },
     { prop: "PLANTS", x: 3, y: 8.5, texture: "nesProps" },
     { prop: "PLANTS", x: 2, y: 8.5, texture: "nesProps" }
@@ -207,15 +214,19 @@ export default class SuspectScene extends Phaser.Scene {
       color: "#d8c9a3"
     }).setOrigin(0.5);
 
-    this.add.text(NPC_START_POS.x, NPC_START_POS.y + 60, "View Profile", {
-  fontSize: "13px", color: "#a89a7a", backgroundColor: "#2b2420", padding: { x: 8, y: 4 }
-}).setOrigin(0.5).setInteractive({ useHandCursor: true })
-  .on("pointerdown", () => {
-    showClue(
-      `${suspectInfo.fullName} — ${suspectInfo.occupation}`,
-      `${suspectInfo.personality}\n\n${suspectInfo.publicBackstory ?? suspectInfo.backstory}`
-    );
-  });
+    // "Case File" box — top-left corner, opens the same dossier from the
+    // briefing, pre-focused on whichever suspect this room belongs to.
+    // Replaces the old "View Profile" button.
+    this.add.text(20, 20, "📁 Case File", {
+      fontSize: "13px",
+      color: "#a89a7a",
+      backgroundColor: "#2b2420",
+      padding: { x: 8, y: 4 }
+    }).setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => {
+        showDossier("The Case File", buildCaseFileRoster(), "Close", () => hideBriefing(), this.suspectId);
+      });
+
     // Same clue-marker pattern as StudyScene, reused for this room's clues
     this.clueMarkers = (phase1Clues ?? []).map((clue) => {
       const marker = this.add.circle(clue.x, clue.y, 8, 0xd8b04a).setStrokeStyle(2, 0xffffff);

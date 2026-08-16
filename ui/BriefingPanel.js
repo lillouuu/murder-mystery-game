@@ -61,7 +61,12 @@ function portraitStyle(textureSrc, displaySize) {
 }
 
 // roster: [{ id, name, subtitle, textureSrc, detailHTML }]
-export function showDossier(title, roster, continueLabel, onContinue) {
+// roster: [{ id, name, subtitle, textureSrc, detailHTML }]
+// initialId (optional): which roster entry to open on, by id. Falls back
+// to the first entry (the victim, in BriefingScene's case) when omitted
+// or not found — lets callers like SuspectScene open straight to whichever
+// suspect the player is currently talking to.
+export function showDossier(title, roster, continueLabel, onContinue, initialId) {
   const overlay = ensureOverlay();
   overlay.querySelector(".dossier-title").textContent = title;
 
@@ -83,6 +88,9 @@ export function showDossier(title, roster, continueLabel, onContinue) {
     detailEl.scrollTop = 0;
   }
 
+  let initialItem = null;
+  let initialButton = null;
+
   roster.forEach((person, i) => {
     const item = document.createElement("button");
     item.className = "dossier-roster-item";
@@ -92,8 +100,20 @@ export function showDossier(title, roster, continueLabel, onContinue) {
     `;
     item.addEventListener("click", () => selectPerson(person, item));
     rosterEl.appendChild(item);
-    if (i === 0) selectPerson(person, item);
+    if (person.id === initialId) {
+      initialItem = person;
+      initialButton = item;
+    }
+    if (i === 0 && !initialId) {
+      initialItem = person;
+      initialButton = item;
+    }
   });
+  if (!initialItem && roster.length) {
+    initialItem = roster[0];
+    initialButton = rosterEl.querySelector(".dossier-roster-item");
+  }
+  if (initialItem) selectPerson(initialItem, initialButton);
 
   const btn = overlay.querySelector(".briefing-continue-btn");
   btn.textContent = continueLabel;
